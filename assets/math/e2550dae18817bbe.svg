@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="143pt" height="23pt" viewBox="0 0 143 23" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:date>2026-10-09T01:28:57.138490</dc:date>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Matplotlib v3.11.2, https://matplotlib.org/</dc:title>
+     </cc:Agent>
+    </dc:creator>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  
+  <g id="text_1">
+   <!-- $\pi_b:\;s\longrightarrow{\cal R}$ -->
+   <g style="fill: #83e0b2" transform="translate(0 18) scale(0.27 -0.27)">
+    <defs>
+     <path id="DejaVuSans-Oblique-354" d="M 584 3500 
+L 3938 3500 
+L 3825 2925 
+L 3384 2925 
+L 2966 775 
+Q 2922 550 2981 450 
+Q 3038 353 3209 353 
+Q 3256 353 3325 363 
+Q 3397 369 3419 372 
+L 3338 -44 
+Q 3222 -84 3103 -103 
+Q 2981 -122 2866 -122 
+Q 2491 -122 2388 81 
+Q 2284 288 2391 838 
+L 2797 2925 
+L 1506 2925 
+L 938 0 
+L 350 0 
+L 919 2925 
+L 472 2925 
+L 584 3500 
+z
+" transform="scale(0.015625)"/>
+     <path id="DejaVuSans-Oblique-45" d="M 3169 2138 
+Q 3169 2591 2961 2847 
+Q 2753 3103 2388 3103 
+Q 2122 3103 1889 2973 
+Q 1656 2844 1484 2597 
+Q 1303 2338 1198 1995 
+Q 1094 1653 1094 1313 
+Q 1094 881 1298 636 
+Q 1503 391 1863 391 
+Q 2134 391 2365 517 
+Q 2597 644 2772 891 
+Q 2950 1147 3059 1487 
+Q 3169 1828 3169 2138 
+z
+M 1381 2969 
+Q 1594 3256 1914 3420 
+Q 2234 3584 2584 3584 
+Q 3122 3584 3439 3221 
+Q 3756 2859 3756 2241 
+Q 3756 1734 3570 1259 
+Q 3384 784 3041 416 
+Q 2816 172 2522 40 
+Q 2228 -91 1906 -91 
+Q 1566 -91 1316 65 
+Q 1066 222 909 531 
+L 806 0 
+L 231 0 
+L 1178 4863 
+L 1753 4863 
+L 1381 2969 
+z
+" transform="scale(0.015625)"/>
+     <path id="DejaVuSans-1d" d="M 750 794 
+L 1409 794 
+L 1409 0 
+L 750 0 
+L 750 794 
+z
+M 750 3309 
+L 1409 3309 
+L 1409 2516 
+L 750 2516 
+L 750 3309 
+z
+" transform="scale(0.015625)"/>
+     <path id="DejaVuSans-Oblique-56" d="M 3200 3397 
+L 3091 2853 
+Q 2863 2978 2609 3040 
+Q 2356 3103 2088 3103 
+Q 1634 3103 1373 2948 
+Q 1113 2794 1113 2528 
+Q 1113 2219 1719 2053 
+Q 1766 2041 1788 2034 
+L 1972 1978 
+Q 2547 1819 2739 1644 
+Q 2931 1469 2931 1166 
+Q 2931 609 2489 259 
+Q 2047 -91 1331 -91 
+Q 1053 -91 747 -37 
+Q 441 16 72 128 
+L 184 722 
+Q 500 559 806 475 
+Q 1113 391 1394 391 
+Q 1816 391 2080 572 
+Q 2344 753 2344 1031 
+Q 2344 1331 1650 1516 
+L 1591 1531 
+L 1394 1581 
+Q 956 1697 753 1886 
+Q 550 2075 550 2369 
+Q 550 2928 970 3256 
+Q 1391 3584 2113 3584 
+Q 2397 3584 2667 3537 
+Q 2938 3491 3200 3397 
+z
+" transform="scale(0.015625)"/>
+     <path id="DejaVuSans-1051" d="M 8863 2147 
+L 8863 1866 
+L 7634 638 
+L 7259 1013 
+L 7988 1741 
+L 366 1741 
+L 366 2272 
+L 7988 2272 
+L 7259 3000 
+L 7634 3375 
+L 8863 2147 
+z
+" transform="scale(0.015625)"/>
+     <path id="STIXNonUnicode-Italic-84" d="M 5120 826 
+L 5222 710 
+Q 4531 -19 3994 -19 
+Q 3674 -19 3466 147 
+Q 3258 314 3171 528 
+Q 3085 742 2944 1046 
+Q 2803 1350 2643 1536 
+Q 2586 1606 2368 1734 
+Q 2150 1862 2118 1862 
+L 2176 2010 
+Q 2963 2086 3436 2464 
+Q 3910 2842 3910 3219 
+Q 3910 3654 3657 3811 
+Q 3405 3968 2765 3968 
+Q 2605 3968 2544 3917 
+Q 2483 3866 2451 3750 
+L 1709 1216 
+Q 1645 998 1593 857 
+Q 1542 717 1433 537 
+Q 1325 358 1193 252 
+Q 1062 147 848 73 
+Q 634 0 358 0 
+L 416 154 
+Q 608 154 707 314 
+Q 806 474 934 902 
+L 1517 2918 
+Q 1709 3565 1709 3661 
+Q 1709 3891 1414 3891 
+Q 1254 3891 1113 3859 
+Q 973 3827 845 3760 
+Q 717 3693 646 3648 
+Q 576 3603 467 3520 
+Q 358 3437 346 3424 
+L 243 3546 
+Q 486 3795 723 3942 
+Q 960 4090 1270 4150 
+Q 1581 4211 1801 4224 
+Q 2022 4237 2483 4237 
+Q 3341 4237 3814 4118 
+Q 4288 4000 4432 3811 
+Q 4576 3622 4576 3302 
+Q 4576 3110 4509 2934 
+Q 4442 2758 4275 2560 
+Q 4109 2362 3773 2189 
+Q 3437 2016 2957 1888 
+L 2957 1862 
+Q 3219 1760 3382 1568 
+Q 3546 1376 3610 1177 
+Q 3674 979 3731 796 
+Q 3789 614 3897 496 
+Q 4006 378 4205 378 
+Q 4659 378 5120 826 
+z
+" transform="scale(0.015625)"/>
+    </defs>
+    <use xlink:href="#DejaVuSans-Oblique-354" transform="translate(0 0.796875)"/>
+    <use xlink:href="#DejaVuSans-Oblique-45" transform="translate(60.205078 -14.203076) scale(0.7)"/>
+    <use xlink:href="#DejaVuSans-1d" transform="translate(126.855469 0.796875)"/>
+    <use xlink:href="#DejaVuSans-Oblique-56" transform="translate(207.088433 0.796875)"/>
+    <use xlink:href="#DejaVuSans-1051" transform="translate(278.670464 0.796875)"/>
+    <use xlink:href="#STIXNonUnicode-Italic-84" transform="translate(441.512261 0.796875)"/>
+   </g>
+  </g>
+ </g>
+</svg>

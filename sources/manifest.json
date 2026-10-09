@@ -1,0 +1,96 @@
+{
+  "collection": "Learning Without a Reset",
+  "research_date": "2026-10-09",
+  "sources": [
+    {
+      "episode": "foundations",
+      "paper": "Time Limits in Reinforcement Learning + Autonomous Reinforcement Learning: Formalism and Benchmarking",
+      "authors": "Fabio Pardo et al.; Archit Sharma et al.",
+      "year": "2018 / 2022",
+      "links": [
+        {
+          "title": "Time Limits in Reinforcement Learning · ICML 2018",
+          "url": "https://proceedings.mlr.press/v80/pardo18a.html"
+        },
+        {
+          "title": "EARL: Autonomous RL formalism · ICLR 2022",
+          "url": "https://arxiv.org/abs/2112.09605"
+        }
+      ]
+    },
+    {
+      "episode": "leave-no-trace",
+      "paper": "Leave no Trace: Learning to Reset for Safe and Autonomous Reinforcement Learning",
+      "authors": "Benjamin Eysenbach, Shixiang Gu, Julian Ibarz, Sergey Levine",
+      "year": "ICLR 2018",
+      "links": [
+        {
+          "title": "Leave no Trace · primary paper",
+          "url": "https://arxiv.org/abs/1711.06782"
+        }
+      ]
+    },
+    {
+      "episode": "medal",
+      "paper": "A State-Distribution Matching Approach to Non-Episodic Reinforcement Learning",
+      "authors": "Archit Sharma, Rehaan Ahmad, Chelsea Finn",
+      "year": "2022",
+      "links": [
+        {
+          "title": "MEDAL · primary paper",
+          "url": "https://arxiv.org/abs/2205.05212"
+        }
+      ]
+    },
+    {
+      "episode": "risc",
+      "paper": "Intelligent Switching in Reset-Free RL",
+      "authors": "Darshan Patil, Janarthanan Rajendran, Glen Berseth, Sarath Chandar",
+      "year": "ICLR 2024",
+      "links": [
+        {
+          "title": "RISC · primary paper",
+          "url": "https://arxiv.org/abs/2405.01684"
+        },
+        {
+          "title": "Authors’ implementation",
+          "url": "https://github.com/chandar-lab/RISC"
+        }
+      ]
+    },
+    {
+      "episode": "no-regret",
+      "paper": "Provable Reset-free Reinforcement Learning by No-Regret Reduction",
+      "authors": "Hoai-An Nguyen, Ching-An Cheng",
+      "year": "ICML 2023",
+      "links": [
+        {
+          "title": "Nguyen & Cheng · ICML 2023",
+          "url": "https://proceedings.mlr.press/v202/nguyen23b.html"
+        },
+        {
+          "title": "Full paper and proofs",
+          "url": "https://proceedings.mlr.press/v202/nguyen23b/nguyen23b.pdf"
+        }
+      ]
+    },
+    {
+      "episode": "morefree",
+      "paper": "Reset-free Reinforcement Learning with World Models",
+      "authors": "Zhao Yang, Thomas M. Moerland, Mike Preuss, Aske Plaat, Edward S. Hu",
+      "year": "TMLR 2025",
+      "links": [
+        {
+          "title": "MoReFree · published-version paper",
+          "url": "https://arxiv.org/html/2408.09807v3"
+        },
+        {
+          "title": "Authors’ project and videos",
+          "url": "https://yangzhao-666.github.io/morefree/"
+        }
+      ]
+    }
+  ],
+  "presentation_reference": "https://www.youtube.com/@jbhuang0604/videos",
+  "scope": "Original scripts and diagrams. Paper PDFs are not redistributed. Labs are declared analytic teaching models, not trained paper implementations."
+}

@@ -1,0 +1,815 @@
+1
+00:00:00,593 --> 00:00:04,787
+Imagine a long corridor with a reward only at the far end A beginner
+
+2
+00:00:04,799 --> 00:00:08,365
+repeatedly starts at the entrance and wanders without ever seeing the
+
+3
+00:00:08,377 --> 00:00:12,223
+reward Now allow some attempts to begin at intermediate points visited
+
+4
+00:00:12,234 --> 00:00:16,405
+by a successful demonstrator The reward becomes discoverable useful
+
+5
+00:00:16,417 --> 00:00:20,297
+values can propagate backward and the learner gets practice on meaningful
+
+6
+00:00:20,309 --> 00:00:24,201
+parts of the task In a simulator we might simply assign those initial
+
+7
+00:00:24,213 --> 00:00:28,616
+states A physical robot cannot teleport to them medal asks a backward
+
+8
+00:00:28,628 --> 00:00:32,496
+policy to generate a useful state distribution through real actions
+
+9
+00:00:32,891 --> 00:00:36,795
+The important change is the target instead of always matching the original
+
+10
+00:00:36,807 --> 00:00:40,803
+starting region the backward policy is encouraged to match states found
+
+11
+00:00:40,815 --> 00:00:44,742
+in a small set of demonstrations We will derive the mechanism from a
+
+12
+00:00:44,754 --> 00:00:48,820
+binary classification problem A discriminator distinguishes demonstration
+
+13
+00:00:48,832 --> 00:00:52,712
+states from backward-policy states Its output becomes a reward for the
+
+14
+00:00:52,724 --> 00:00:56,604
+backward controller The resulting curriculum is learned through interaction
+
+15
+00:00:56,999 --> 00:01:01,019
+The companion laboratory uses small normalized histograms so that every
+
+16
+00:01:01,031 --> 00:01:05,341
+probability reward and divergence can be inspected numerically rather
+
+17
+00:01:05,352 --> 00:01:07,362
+than hidden inside a neural network
+
+18
+00:01:09,315 --> 00:01:13,405
+There are two distinct uses of demonstrations in robot learning Behavioral
+
+19
+00:01:13,416 --> 00:01:17,692
+cloning asks the policy to reproduce expert actions at expert states
+
+20
+00:01:18,087 --> 00:01:22,467
+State-distribution matching instead asks a process to visit a similar
+
+21
+00:01:22,478 --> 00:01:25,999
+collection of states Those goals need not produce the same behavior
+
+22
+00:01:26,382 --> 00:01:30,716
+Multiple action sequences can induce similar state marginals especially
+
+23
+00:01:30,820 --> 00:01:34,689
+when the environment has redundant control paths In medal the matching
+
+24
+00:01:34,701 --> 00:01:38,511
+objective shapes the backward controller The forward policy continues
+
+25
+00:01:38,523 --> 00:01:42,659
+to optimize the task reward Demonstration states describe promising
+
+26
+00:01:42,671 --> 00:01:46,853
+places from which learning can proceed they do not prescribe every recovery
+
+27
+00:01:46,865 --> 00:01:50,571
+action This is particularly helpful because a forward demonstration
+
+28
+00:01:50,769 --> 00:01:54,219
+need not show how to reverse all the mistakes made during autonomous
+
+29
+00:01:54,231 --> 00:01:58,135
+exploration The backward distribution is nevertheless constrained by
+
+30
+00:01:58,146 --> 00:02:02,968
+the actual transition dynamics If an expert state lies behind an unreachable
+
+31
+00:02:02,979 --> 00:02:07,383
+barrier a discriminator reward cannot make it reachable Also distinguish
+
+32
+00:02:07,394 --> 00:02:10,961
+the states visited throughout backward rollouts from the states at which
+
+33
+00:02:10,973 --> 00:02:15,446
+control switches medal uses the former as a practical target that influences
+
+34
+00:02:15,457 --> 00:02:19,047
+the latter rather than assuming the two distributions are identical
+
+35
+00:02:19,059 --> 00:02:19,768
+by definition
+
+36
+00:02:21,708 --> 00:02:25,263
+Suppose we can sample from two distributions but cannot evaluate their
+
+37
+00:02:25,275 --> 00:02:29,759
+densities We can still ask a classifier to distinguish them Give demonstration
+
+38
+00:02:29,771 --> 00:02:34,418
+states label one and backward-policy states label zero Train the classifier
+
+39
+00:02:34,430 --> 00:02:38,543
+with binary log likelihood reward a large output on demonstrations and
+
+40
+00:02:38,554 --> 00:02:42,470
+a small output on backward data Equal class weighting is assumed in
+
+41
+00:02:42,481 --> 00:02:46,582
+this derivation The labels are more than a cosmetic choice If we reversed
+
+42
+00:02:46,594 --> 00:02:50,521
+them the algebraic form of the reward would have to reverse too Many
+
+43
+00:02:50,533 --> 00:02:54,401
+apparent disagreements between implementations come from different discriminator
+
+44
+00:02:54,413 --> 00:02:58,619
+conventions Here a high classifier score always means this state looks
+
+45
+00:02:58,630 --> 00:03:02,128
+more like the demonstration class relative to the current backward-policy
+
+46
+00:03:02,139 --> 00:03:06,868
+class Now freeze the backward distribution and consider an ideal classifier
+
+47
+00:03:06,879 --> 00:03:10,609
+with unlimited capacity We can optimize its output separately at each
+
+48
+00:03:10,620 --> 00:03:14,838
+state That lets us solve the classification problem exactly exposing
+
+49
+00:03:14,849 --> 00:03:19,009
+the density ratio hidden inside it The derivation is useful even though
+
+50
+00:03:19,020 --> 00:03:22,564
+a finite neural classifier will only approximate the result and will
+
+51
+00:03:22,575 --> 00:03:25,817
+be trained on a changing imperfect sample of experience
+
+52
+00:03:27,751 --> 00:03:31,852
+At a particular state abbreviate the demonstration density by a and
+
+53
+00:03:31,863 --> 00:03:35,895
+the backward density by b The classifier's contribution is a times log
+
+54
+00:03:35,907 --> 00:03:41,658
+C plus b times log one minus C Differentiate with respect to C The derivative
+
+55
+00:03:41,727 --> 00:03:46,409
+is a divided by C minus b divided by one minus C Setting it to zero
+
+56
+00:03:46,421 --> 00:03:50,522
+gives a simple balance equation Multiply through by C times one minus
+
+57
+00:03:50,534 --> 00:03:56,145
+C We obtain a times one minus C equals b times C Rearranging gives C
+
+58
+00:03:56,296 --> 00:04:00,549
+equal to a divided by a plus b The second derivative is negative wherever
+
+59
+00:04:00,560 --> 00:04:04,290
+both densities are positive so this stationary point is the maximum
+
+60
+00:04:04,685 --> 00:04:08,577
+States with zero combined density provide no classification information
+
+61
+00:04:08,670 --> 00:04:12,457
+and need separate conventions Notice what the answer is not it is not
+
+62
+00:04:12,469 --> 00:04:16,198
+simply the demonstration density A state receives a high score when
+
+63
+00:04:16,210 --> 00:04:20,334
+demonstration mass is large relative to current backward mass As the
+
+64
+00:04:20,346 --> 00:04:24,319
+backward policy fills that region the score decreases The classifier
+
+65
+00:04:24,331 --> 00:04:28,223
+therefore provides a moving signal about distribution mismatch rather
+
+66
+00:04:28,235 --> 00:04:31,011
+than a fixed map of which states are intrinsically good
+
+67
+00:04:32,963 --> 00:04:37,320
+The full objective is a minimax game The classifier maximizes its ability
+
+68
+00:04:37,332 --> 00:04:41,259
+to distinguish the two sources while the backward policy minimizes that
+
+69
+00:04:41,270 --> 00:04:45,186
+distinction When the classifier is held fixed the demonstration term
+
+70
+00:04:45,267 --> 00:04:49,101
+is constant with respect to the backward policy The policy only needs
+
+71
+00:04:49,113 --> 00:04:53,133
+to minimize the expected log of one minus the classifier output on its
+
+72
+00:04:53,144 --> 00:04:57,594
+own visited states Reinforcement learning conventionally maximizes rewards
+
+73
+00:04:57,849 --> 00:05:02,253
+so negate that quantity The backward reward becomes minus log one minus
+
+74
+00:05:02,264 --> 00:05:06,424
+C Under our labeling convention demonstration-like states produce larger
+
+75
+00:05:06,435 --> 00:05:11,512
+rewards Substitute the ideal classifier and simplify the reward is log
+
+76
+00:05:11,524 --> 00:05:15,927
+of one plus demonstration density divided by backward density This reveals
+
+77
+00:05:15,939 --> 00:05:19,819
+how the reward responds to missing coverage Consider a bin containing
+
+78
+00:05:19,831 --> 00:05:23,770
+demonstration mass point three and backward mass point one The ideal
+
+79
+00:05:23,781 --> 00:05:27,789
+classifier outputs point seven five producing a reward of about one
+
+80
+00:05:27,801 --> 00:05:31,844
+point three nine If both masses were point three the classifier would
+
+81
+00:05:31,856 --> 00:05:35,957
+output one half and the reward would be log two about point six nine
+
+82
+00:05:36,340 --> 00:05:39,977
+The lab computes these values directly from the displayed histograms
+
+83
+00:05:41,920 --> 00:05:45,754
+We can also see the matching objective globally Substitute the optimal
+
+84
+00:05:45,766 --> 00:05:50,239
+discriminator into both terms of the minimax loss Introduce the midpoint
+
+85
+00:05:50,250 --> 00:05:54,805
+distribution one half demonstration density plus one half backward density
+
+86
+00:05:55,188 --> 00:05:59,429
+Each denominator is twice this midpoint so each logarithm splits into
+
+87
+00:05:59,440 --> 00:06:03,913
+a density-ratio term and a minus log two constant The two density-ratio
+
+88
+00:06:03,925 --> 00:06:08,177
+expectations are the two Kullback Leibler divergences to the midpoint
+
+89
+00:06:08,561 --> 00:06:12,511
+Their average defines Jensen Shannon divergence Summing gives minus
+
+90
+00:06:12,522 --> 00:06:16,751
+log four plus twice that divergence Since the constant does not affect
+
+91
+00:06:16,763 --> 00:06:20,736
+the minimizing distribution the ideal backward generator minimizes the
+
+92
+00:06:20,748 --> 00:06:24,419
+divergence between its state distribution and the demonstration distribution
+
+93
+00:06:24,803 --> 00:06:28,648
+When the two distributions agree the best classifier outputs one half
+
+94
+00:06:28,741 --> 00:06:32,517
+wherever they have support It cannot tell the sources apart This is
+
+95
+00:06:32,529 --> 00:06:36,723
+an idealized equilibrium under expressive function classes and successful
+
+96
+00:06:36,735 --> 00:06:41,847
+optimization In an actual robot finite data limited policies unreachable
+
+97
+00:06:41,858 --> 00:06:46,134
+states and alternating updates can prevent exact matching The equation
+
+98
+00:06:46,145 --> 00:06:49,863
+explains the objective it does not by itself prove convergence of a
+
+99
+00:06:49,875 --> 00:06:50,990
+neural implementation
+
+100
+00:06:52,918 --> 00:06:56,403
+Return to the corridor If the backward controller sometimes brings the
+
+101
+00:06:56,415 --> 00:07:00,760
+learner near the goal the forward policy can discover successful transitions
+
+102
+00:07:01,143 --> 00:07:04,664
+Those values can then support learning from earlier states provided
+
+103
+00:07:04,675 --> 00:07:08,358
+the data connects the regions The demonstration distribution is a way
+
+104
+00:07:08,370 --> 00:07:11,937
+to allocate practice along a successful route without requiring the
+
+105
+00:07:11,948 --> 00:07:16,305
+reset policy to return all the way to the entrance every time This is
+
+106
+00:07:16,317 --> 00:07:20,836
+a curriculum effect not a change in the final task A policy that succeeds
+
+107
+00:07:20,848 --> 00:07:24,577
+only when started one step from the goal may still fail the deployment
+
+108
+00:07:24,589 --> 00:07:28,353
+evaluation from the original start distribution Training must eventually
+
+109
+00:07:28,365 --> 00:07:32,570
+support competence over those desired starts Useful intermediate practice
+
+110
+00:07:32,582 --> 00:07:36,242
+is valuable because it can build that competence not because it makes
+
+111
+00:07:36,253 --> 00:07:40,331
+the evaluation easier by definition The paper motivates its choice using
+
+112
+00:07:40,343 --> 00:07:43,945
+the importance of initial-state coverage for policy improvement and
+
+113
+00:07:43,956 --> 00:07:48,359
+tests it on sparse-reward tasks Our corridor illustration makes that
+
+114
+00:07:48,371 --> 00:07:52,623
+motivation visible but does not establish a universal sample-complexity
+
+115
+00:07:52,635 --> 00:07:56,910
+improvement for arbitrary demonstrations A demonstration can be narrow
+
+116
+00:07:57,166 --> 00:08:00,686
+unrepresentative or physically irrelevant to states encountered during
+
+117
+00:08:00,698 --> 00:08:04,241
+recovery Distribution choice remains an assumption to examine
+
+118
+00:08:06,196 --> 00:08:09,542
+The full system has three moving parts The forward learner improves
+
+119
+00:08:09,553 --> 00:08:13,492
+task performance The backward learner improves the distribution of states
+
+120
+00:08:13,562 --> 00:08:17,152
+encountered between attempts The classifier updates its distinction
+
+121
+00:08:17,163 --> 00:08:21,439
+between demonstration samples and backward-policy samples These updates
+
+122
+00:08:21,532 --> 00:08:25,389
+share one physical interaction stream but they optimize different losses
+
+123
+00:08:25,505 --> 00:08:29,792
+and can change on different time scales During a forward phase execute
+
+124
+00:08:29,804 --> 00:08:34,137
+task-directed actions and store transitions with task rewards During
+
+125
+00:08:34,149 --> 00:08:39,145
+a backward phase execute reset-directed actions and compute classifier-based
+
+126
+00:08:39,156 --> 00:08:43,072
+rewards on the resulting states Update the discriminator from demonstration
+
+127
+00:08:43,083 --> 00:08:47,057
+states and backward replay data As the backward distribution changes
+
+128
+00:08:47,243 --> 00:08:51,657
+the classifier reward changes too That nonstationarity is a real part
+
+129
+00:08:51,669 --> 00:08:56,038
+of the method The original medal setup assumes task rewards and demonstration
+
+130
+00:08:56,049 --> 00:09:00,023
+data with optional backward demonstrations described in the paper Do
+
+131
+00:09:00,034 --> 00:09:04,240
+not silently replace these with a completely unsupervised setting Also
+
+132
+00:09:04,252 --> 00:09:08,016
+distinguish this paper from later medal-plus-plus work which adds other
+
+133
+00:09:08,027 --> 00:09:11,745
+components for autonomous visual robot learning Here we are explaining
+
+134
+00:09:11,757 --> 00:09:15,312
+the state-distribution matching mechanism itself and the resources it
+
+135
+00:09:15,324 --> 00:09:15,928
+requires
+
+136
+00:09:17,870 --> 00:09:21,739
+A classifier score is tempting to interpret as geometric closeness to
+
+137
+00:09:21,751 --> 00:09:26,061
+a demonstration But the ideal formula depends on two densities not Euclidean
+
+138
+00:09:26,073 --> 00:09:29,849
+distance A state can have a high score because backward data rarely
+
+139
+00:09:29,860 --> 00:09:33,648
+visits it even if it is not especially close to most demonstrations
+
+140
+00:09:34,031 --> 00:09:37,679
+Class weighting and replay sampling can further change the relationship
+
+141
+00:09:37,691 --> 00:09:41,885
+between the score and the underlying distributions The logarithmic reward
+
+142
+00:09:41,943 --> 00:09:45,661
+can also become numerically extreme when the classifier confidently
+
+143
+00:09:45,673 --> 00:09:49,936
+separates the data In the laboratory we use a small positive floor before
+
+144
+00:09:49,948 --> 00:09:54,351
+taking logarithms and state that choice explicitly It prevents undefined
+
+145
+00:09:54,363 --> 00:09:58,615
+displays it is not a theoretical solution to poor support overlap or
+
+146
+00:09:58,627 --> 00:10:02,124
+unstable adversarial training Those are learning problems requiring
+
+147
+00:10:02,135 --> 00:10:06,051
+more than a plotting convention Finally matching state marginals does
+
+148
+00:10:06,062 --> 00:10:10,257
+not identify the expert policy or guarantee the same order of states
+
+149
+00:10:10,652 --> 00:10:14,346
+Two trajectories can visit the same bins in very different sequences
+
+150
+00:10:14,741 --> 00:10:18,320
+The environment and the task reward still determine whether those visits
+
+151
+00:10:18,331 --> 00:10:22,363
+are useful This is why our visual explanation keeps the trajectory view
+
+152
+00:10:22,374 --> 00:10:26,197
+alongside the histogram instead of treating a matched histogram as the
+
+153
+00:10:26,208 --> 00:10:27,382
+entire control problem
+
+154
+00:10:29,310 --> 00:10:33,470
+The medal lab has eight state bins One histogram represents demonstration
+
+155
+00:10:33,481 --> 00:10:37,699
+states the other represents backward visits Change the concentration
+
+156
+00:10:37,710 --> 00:10:41,602
+and location of the backward histogram and inspect each bin's optimal
+
+157
+00:10:41,614 --> 00:10:46,342
+classifier score and reset reward The interface also computes Jensen
+
+158
+00:10:46,563 --> 00:10:50,293
+Shannon divergence from the normalized distributions using the midpoint
+
+159
+00:10:50,304 --> 00:10:54,510
+formula we derived Press the distribution-step button to apply a simple
+
+160
+00:10:54,522 --> 00:10:58,634
+exponentiated reward update Each current bin mass is multiplied by the
+
+161
+00:10:58,704 --> 00:11:02,352
+exponential of its reward times a learning rate and then the masses
+
+162
+00:11:02,364 --> 00:11:06,500
+are normalized This is a deliberately simplified distribution-space
+
+163
+00:11:06,512 --> 00:11:10,020
+experiment It illustrates the direction of the incentive while avoiding
+
+164
+00:11:10,032 --> 00:11:14,261
+the claim that a real policy can independently assign arbitrary probability
+
+165
+00:11:14,505 --> 00:11:18,757
+to every state After each step recompute the optimal discriminator for
+
+166
+00:11:18,769 --> 00:11:23,021
+the new histogram Regions that were undersampled become less distinguishable
+
+167
+00:11:23,207 --> 00:11:27,540
+as mass arrives Try a large step size and observe that aggressive updates
+
+168
+00:11:27,552 --> 00:11:31,572
+need not make a smooth monotonic path in this toy alternating procedure
+
+169
+00:11:31,967 --> 00:11:35,847
+Then reset the experiment The mathematical equilibrium and the behavior
+
+170
+00:11:35,859 --> 00:11:39,112
+of a finite update rule are related but they are different claims
+
+171
+00:11:41,070 --> 00:11:45,194
+To test the central idea compare backward policies trained toward different
+
+172
+00:11:45,206 --> 00:11:48,622
+target distributions while holding the rest of the learning system as
+
+173
+00:11:48,633 --> 00:11:52,374
+consistent as possible Returning to the original start region tests
+
+174
+00:11:52,386 --> 00:11:56,905
+one hypothesis Matching demonstration states tests another Measure task
+
+175
+00:11:56,917 --> 00:12:00,704
+competence from the same evaluation distribution so that an easier testing
+
+176
+00:12:00,716 --> 00:12:05,189
+setup cannot masquerade as a better curriculum Count backward interactions
+
+177
+00:12:05,363 --> 00:12:09,859
+as well as forward interactions Record the number and kind of demonstrations
+
+178
+00:12:10,069 --> 00:12:14,251
+the task reward information provided and any manual resets during training
+
+179
+00:12:14,635 --> 00:12:18,306
+If the classifier uses privileged state information that matters too
+
+180
+00:12:18,689 --> 00:12:22,442
+An algorithm can be very useful with those resources but the resource
+
+181
+00:12:22,454 --> 00:12:25,765
+description is part of what another researcher needs to reproduce the
+
+182
+00:12:25,776 --> 00:12:30,052
+comparison The paper reports benefits on its tested sparse-reward settings
+
+183
+00:12:30,435 --> 00:12:35,001
+Our explanatory plots do not copy those empirical curves or invent performance
+
+184
+00:12:35,013 --> 00:12:39,172
+numbers They isolate the classifier objective and show why it can encourage
+
+185
+00:12:39,184 --> 00:12:43,355
+useful coverage The gap between that mechanism and a successful end-to-end
+
+186
+00:12:43,366 --> 00:12:48,443
+robot is precisely where dynamics representation optimization and evaluation
+
+187
+00:12:48,455 --> 00:12:50,198
+design enter the research question
+
+188
+00:12:52,129 --> 00:12:55,788
+medal turns a practical question where should the robot practice next
+
+189
+00:12:56,021 --> 00:12:59,646
+into a distribution-matching game The derivation starts from labeled
+
+190
+00:12:59,657 --> 00:13:04,293
+samples gives an optimal density-ratio classifier and converts the generator's
+
+191
+00:13:04,305 --> 00:13:09,591
+objective into a reset reward At ideal equilibrium the backward occupancy
+
+192
+00:13:09,823 --> 00:13:13,320
+matches the demonstration-state distribution and the classifier can
+
+193
+00:13:13,332 --> 00:13:17,050
+no longer distinguish the sources The mechanism comes with a clear set
+
+194
+00:13:17,061 --> 00:13:21,906
+of qualifications The policy cannot ignore dynamics Occupancy and handoff
+
+195
+00:13:21,918 --> 00:13:25,961
+distributions are related but distinct A finite classifier can be wrong
+
+196
+00:13:26,344 --> 00:13:30,527
+A state marginal does not specify action sequences Most of our useful
+
+197
+00:13:30,538 --> 00:13:33,733
+understanding comes from keeping those qualifications attached to the
+
+198
+00:13:33,745 --> 00:13:37,962
+equations rather than dropping them after drawing a neat adversarial-learning
+
+199
+00:13:37,974 --> 00:13:41,982
+diagram We have now changed the destination of recovery The next paper
+
+200
+00:13:41,994 --> 00:13:45,909
+changes its timing Even if the current goal is appropriate continuing
+
+201
+00:13:46,014 --> 00:13:49,371
+all the way to it may spend most of the interaction budget on a region
+
+202
+00:13:49,476 --> 00:13:53,635
+the agent already knows risk uses a success critic to decide when to
+
+203
+00:13:53,647 --> 00:13:57,260
+hand off early while preserving the value targets of the underlying
+
+204
+00:13:57,272 --> 00:13:58,666
+goal-conditioned control problem

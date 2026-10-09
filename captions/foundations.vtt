@@ -1,0 +1,595 @@
+WEBVTT
+
+00:00:00.583 --> 00:00:04.872
+Imagine teaching a robot to put a cup on a shelf In a simulator each
+
+00:00:04.884 --> 00:00:08.804
+attempt begins with the cup conveniently back on the table That convenience
+
+00:00:08.816 --> 00:00:13.367
+is doing real work Somebody or some code with extraordinary powers is
+
+00:00:13.379 --> 00:00:17.204
+reversing the previous attempt Remove that reset button and the next
+
+00:00:17.215 --> 00:00:20.992
+attempt begins wherever the cup actually is Learning must now create
+
+00:00:21.004 --> 00:00:25.424
+its own opportunities to practice Draw the physical state as a dot moving
+
+00:00:25.436 --> 00:00:29.392
+along a continuous curve A training script may divide that curve into
+
+00:00:29.404 --> 00:00:33.752
+episodes but drawing a vertical line does not move the dot A controller
+
+00:00:33.764 --> 00:00:37.827
+switch also leaves the dot where it is An external reset is different
+
+00:00:38.220 --> 00:00:42.616
+it intervenes on the state often using a person or a mechanism outside
+
+00:00:42.628 --> 00:00:46.477
+the learned action space Our central question is therefore larger than
+
+00:00:46.488 --> 00:00:50.706
+maximizing reward on one attempt How does an agent make progress while
+
+00:00:50.718 --> 00:00:55.341
+preserving useful future attempts We will track task time recovery time
+
+00:00:55.698 --> 00:00:59.391
+and human intervention This series builds the necessary mathematics
+
+00:00:59.642 --> 00:01:03.859
+then examines five approaches Every numerical experiment in the companion
+
+00:01:04.002 --> 00:01:08.005
+is a transparent teaching example rather than a reproduction of a paper's
+
+00:01:08.017 --> 00:01:08.613
+benchmark
+
+00:01:10.615 --> 00:01:14.379
+First distinguish three boundaries Termination says the return we have
+
+00:01:14.391 --> 00:01:18.394
+defined has ended If a task pays once when the cup reaches the shelf
+
+00:01:18.561 --> 00:01:23.339
+and then ends that success can be terminal A failure can also be terminal
+
+00:01:23.410 --> 00:01:27.556
+if the task specification says so Terminal is a property of the modeled
+
+00:01:27.568 --> 00:01:32.084
+task not a synonym for an inconvenient observation Truncation says we
+
+00:01:32.096 --> 00:01:35.753
+stopped collecting this segment Perhaps a rollout buffer filled or a
+
+00:01:35.765 --> 00:01:40.245
+training timer expired If the underlying task continues the unobserved
+
+00:01:40.257 --> 00:01:44.641
+future still contributes value A time limit can instead be part of the
+
+00:01:44.713 --> 00:01:49.133
+actual task such as finishing within thirty seconds We must decide which
+
+00:01:49.145 --> 00:01:53.303
+interpretation is intended before choosing a learning target A handoff
+
+00:01:53.374 --> 00:01:57.258
+is a third event The forward controller yields to a recovery controller
+
+00:01:57.532 --> 00:02:01.476
+but the world keeps evolving That handoff need not terminate either
+
+00:02:01.488 --> 00:02:05.622
+controller's counterfactual goal-reaching value In an off-policy learner
+
+00:02:05.896 --> 00:02:10.078
+we can collect with one behavior and evaluate another policy Keep these
+
+00:02:10.090 --> 00:02:13.938
+three labels separate in your replay data a single undifferentiated
+
+00:02:13.950 --> 00:02:15.701
+done flag throws away meaning
+
+00:02:17.653 --> 00:02:21.882
+Let the discounted return be the reward now plus gamma times the next
+
+00:02:21.894 --> 00:02:26.588
+reward plus gamma squared times the following reward and so on Factor
+
+00:02:26.600 --> 00:02:30.794
+one gamma out of everything after the first reward The entire future
+
+00:02:30.806 --> 00:02:35.154
+becomes gamma times the next return This simple rearrangement is the
+
+00:02:35.166 --> 00:02:39.193
+source of the Bellman equation it is not an arbitrary training convention
+
+00:02:39.586 --> 00:02:43.411
+Now condition on the current state and on following a policy The conditional
+
+00:02:43.423 --> 00:02:47.235
+expectation of that future return is the value of the successor state
+
+00:02:47.640 --> 00:02:51.286
+Because we rarely know the expectation exactly a temporal difference
+
+00:02:51.298 --> 00:02:55.909
+update uses a sampled reward and an estimated successor value The result
+
+00:02:56.028 --> 00:03:00.341
+is a bootstrap target observed evidence now plus an estimate of what
+
+00:03:00.353 --> 00:03:04.761
+remains If the modeled return truly ends the remaining contribution
+
+00:03:04.952 --> 00:03:09.324
+is zero Otherwise it remains present even when a data collector stops
+
+00:03:09.336 --> 00:03:13.613
+writing observations This gives the termination mask on screen Notice
+
+00:03:13.625 --> 00:03:17.986
+what is absent neither a buffer boundary nor a controller switch automatically
+
+00:03:17.997 --> 00:03:22.322
+sets that mask Their effects must follow from the return being evaluated
+
+00:03:22.668 --> 00:03:24.681
+rather than from the shape of a software loop
+
+00:03:26.623 --> 00:03:30.876
+Consider the smallest possible continuing environment one state one
+
+00:03:30.888 --> 00:03:36.131
+action and reward one on every transition Let gamma be point nine Because
+
+00:03:36.142 --> 00:03:40.443
+the state never changes the Bellman equation says value equals one plus
+
+00:03:40.539 --> 00:03:44.995
+point nine times itself Subtract point nine value from both sides and
+
+00:03:45.007 --> 00:03:49.367
+divide The correct value is ten Nothing about this calculation mentions
+
+00:03:49.474 --> 00:03:53.847
+episode length Suppose a collector cuts the trajectory after five steps
+
+00:03:54.240 --> 00:03:58.064
+At that last recorded transition a correct estimate produces target
+
+00:03:58.076 --> 00:04:03.140
+one plus point nine times ten again ten If we treat the cutoff as terminal
+
+00:04:03.390 --> 00:04:07.334
+the target suddenly becomes one The physical transition is identical
+
+00:04:07.345 --> 00:04:11.146
+to all the others yet our labeling makes it look dramatically worse
+
+00:04:11.551 --> 00:04:15.340
+There is a useful quantitative extension If a state-independent artificial
+
+00:04:15.352 --> 00:04:19.641
+cutoff occurs with probability p at each transition and we mistakenly
+
+00:04:19.653 --> 00:04:24.216
+mask it the expected fixed point becomes one divided by one minus gamma
+
+00:04:24.430 --> 00:04:28.898
+times one minus p With p equal to point two that is about three point
+
+00:04:28.910 --> 00:04:33.163
+five seven The interactive lab lets you move both parameters and see
+
+00:04:33.175 --> 00:04:33.950
+the bias grow
+
+00:04:35.888 --> 00:04:40.010
+Now change the task itself The robot must deliver the cup before a deadline
+
+00:04:40.404 --> 00:04:44.681
+A state two steps from success is promising when ten steps remain and
+
+00:04:44.693 --> 00:04:49.125
+hopeless when only one step remains If the observation includes only
+
+00:04:49.137 --> 00:04:53.569
+cup position these two situations appear identical A value network is
+
+00:04:53.581 --> 00:04:57.739
+being asked to assign two different answers to the same input The missing
+
+00:04:57.751 --> 00:05:02.135
+variable is remaining time Augment the state with a clock or otherwise
+
+00:05:02.147 --> 00:05:06.174
+make time inferable to the policy The finite-horizon value is now a
+
+00:05:06.186 --> 00:05:10.141
+function of both state and steps remaining Its recursion decrements
+
+00:05:10.153 --> 00:05:14.657
+the clock At zero remaining steps the task really has ended and the
+
+00:05:14.669 --> 00:05:19.029
+remaining value is zero under this specified reward convention This
+
+00:05:19.041 --> 00:05:22.877
+is why always bootstrap and never bootstrap are both incomplete rules
+
+00:05:23.271 --> 00:05:27.345
+Ask what process the critic is supposed to represent A continuing task
+
+00:05:27.405 --> 00:05:31.599
+artificially sliced for training keeps its tail A deadline-limited task
+
+00:05:31.670 --> 00:05:35.685
+includes time and has a genuine boundary The paper's distinction is
+
+00:05:35.697 --> 00:05:39.629
+about mathematical consistency between the state the objective and the
+
+00:05:39.641 --> 00:05:43.131
+target rather than a universal preference for longer episodes
+
+00:05:45.090 --> 00:05:49.344
+Even with the correct mask one implementation detail can quietly undo
+
+00:05:49.356 --> 00:05:53.156
+the reasoning Some environment wrappers automatically reset after a
+
+00:05:53.168 --> 00:05:57.267
+boundary The next observation they return may be a fresh start while
+
+00:05:57.278 --> 00:06:01.746
+the final observation from the old trajectory is stored separately Bootstrapping
+
+00:06:01.758 --> 00:06:05.261
+from that fresh start connects two states that were never connected
+
+00:06:05.273 --> 00:06:09.633
+by the recorded action Picture the replay tuple as a small causal diagram
+
+00:06:10.027 --> 00:06:13.648
+The action leads from the current state to a particular successor and
+
+00:06:13.660 --> 00:06:17.806
+the reward belongs to that transition A separate reset arrow must not
+
+00:06:17.818 --> 00:06:22.048
+replace the successor arrow Record the actual final observation before
+
+00:06:22.060 --> 00:06:26.277
+reset and preserve separate termination and truncation information The
+
+00:06:26.289 --> 00:06:30.281
+precise field names depend on the environment interface In goal-conditioned
+
+00:06:30.292 --> 00:06:34.141
+reset-free learning preserve the goal associated with the value update
+
+00:06:34.153 --> 00:06:37.786
+too If data collection changes from reaching the shelf to returning
+
+00:06:37.798 --> 00:06:41.980
+to the table the old critic's target still concerns its old goal unless
+
+00:06:41.992 --> 00:06:46.686
+the algorithm explicitly relabels and recomputes rewards A controller
+
+00:06:46.698 --> 00:06:50.951
+handoff changes future behavior off-policy learning specifies how to
+
+00:06:50.963 --> 00:06:54.144
+estimate the desired continuation despite that change
+
+00:06:56.093 --> 00:06:59.560
+Suppose a robot reaches the shelf once and then keeps holding the cup
+
+00:06:59.572 --> 00:07:04.076
+there If the reward is one whenever the cup is on the shelf this behavior
+
+00:07:04.087 --> 00:07:08.055
+can score extremely well over its continuing lifetime Yet it may have
+
+00:07:08.067 --> 00:07:12.558
+practiced moving the cup from the table only once A second robot repeatedly
+
+00:07:12.570 --> 00:07:17.205
+takes the cup down and replaces it sacrificing immediate reward to learn
+
+00:07:17.217 --> 00:07:21.268
+the full skill Which robot is better depends on the objective Deployment
+
+00:07:21.280 --> 00:07:25.426
+evaluation asks how capable the learned policy is when started from
+
+00:07:25.438 --> 00:07:29.881
+the desired distribution Continuing evaluation asks how much reward
+
+00:07:29.893 --> 00:07:34.230
+the learning system obtains over the interactions it actually experiences
+
+00:07:34.623 --> 00:07:38.889
+Earl makes this distinction explicit Recovery is useful for one objective
+
+00:07:39.067 --> 00:07:42.868
+even when it temporarily reduces the other For a clear experimental
+
+00:07:42.880 --> 00:07:47.014
+report keep evaluation episodes separate from training interventions
+
+00:07:47.407 --> 00:07:50.791
+A fresh start used to measure final competence does not automatically
+
+00:07:50.803 --> 00:07:55.568
+count as a training reset but it should be disclosed Also report environmental
+
+00:07:55.580 --> 00:08:00.143
+interactions human resets and elapsed recovery time These quantities
+
+00:08:00.155 --> 00:08:04.289
+reveal whether an apparent gain came from better learning easier evaluation
+
+00:08:04.301 --> 00:08:06.934
+starts or an uncounted source of assistance
+
+00:08:08.894 --> 00:08:13.433
+The phrase reset suggests returning to one exact configuration But learning
+
+00:08:13.445 --> 00:08:17.532
+often needs a distribution of useful starting situations Represent the
+
+00:08:17.543 --> 00:08:22.202
+states visited by a policy as an occupancy distribution add their visitation
+
+00:08:22.214 --> 00:08:27.158
+probabilities across time discount them and normalize A controller changes
+
+00:08:27.170 --> 00:08:31.221
+not only the next action but the distribution of future data seen by
+
+00:08:31.233 --> 00:08:35.581
+the learner When a backward policy runs between task attempts its final
+
+00:08:35.593 --> 00:08:39.716
+states become the next forward starts The reset policy is therefore
+
+00:08:39.728 --> 00:08:43.802
+also a curriculum generator Sending the robot to the same distant starting
+
+00:08:43.814 --> 00:08:48.389
+configuration may be faithful to evaluation yet difficult for discovering
+
+00:08:48.401 --> 00:08:52.940
+sparse rewards Sending it to useful intermediate states may create practice
+
+00:08:52.952 --> 00:08:56.943
+opportunities that would otherwise be extremely rare There is an important
+
+00:08:56.955 --> 00:09:00.887
+distinction between a policy's occupancy and its final-state distribution
+
+00:09:01.280 --> 00:09:04.688
+They are related by the dynamics and stopping rule but they are not
+
+00:09:04.699 --> 00:09:09.012
+generally equal Later medal will target demonstration-state occupancy
+
+00:09:09.143 --> 00:09:13.230
+as a practical way to create useful starts We will keep that modeling
+
+00:09:13.242 --> 00:09:17.090
+step visible rather than pretending that matching visits automatically
+
+00:09:17.102 --> 00:09:19.961
+proves every handoff distribution is optimal
+
+00:09:21.914 --> 00:09:25.858
+A cup can slide to the edge of a table and still be recoverable Once
+
+00:09:25.870 --> 00:09:30.159
+it falls into a sealed bin outside the robot's reach no available action
+
+00:09:30.302 --> 00:09:34.531
+may return it On a state graph the second situation is a region with
+
+00:09:34.626 --> 00:09:39.035
+incoming edges but no path back No amount of additional value-function
+
+00:09:39.047 --> 00:09:43.228
+training can manufacture a missing physical action Now distinguish that
+
+00:09:43.240 --> 00:09:47.887
+structural impossibility from a weak reset policy A robot may currently
+
+00:09:47.899 --> 00:09:51.962
+fail to pick up a cup that another policy could retrieve Observed failure
+
+00:09:51.973 --> 00:09:56.215
+alone does not prove irreversibility This distinction matters whenever
+
+00:09:56.227 --> 00:10:00.623
+an algorithm decides whether to keep trying ask for assistance or veto
+
+00:10:00.635 --> 00:10:04.555
+an action before it happens Its judgment is based on limited evidence
+
+00:10:04.948 --> 00:10:09.166
+Reset-free methods consequently make different assumptions about recoverability
+
+00:10:09.416 --> 00:10:13.955
+supervision and permitted intervention Some reduce manual resets empirically
+
+00:10:14.360 --> 00:10:18.482
+Some learn indefinitely in reversible environments A theoretical method
+
+00:10:18.494 --> 00:10:23.141
+may allow resets while bounding their growth Read reset-free as a problem
+
+00:10:23.153 --> 00:10:27.144
+setting whose operational definition must be stated rather than as an
+
+00:10:27.215 --> 00:10:31.028
+automatic promise of zero human assistance in every environment
+
+00:10:32.968 --> 00:10:36.626
+We can now organize the literature around questions rather than acronyms
+
+00:10:37.019 --> 00:10:41.082
+Leave no Trace asks whether a proposed forward action leaves the reset
+
+00:10:41.094 --> 00:10:45.323
+controller enough ability to recover Its critic becomes an action gate
+
+00:10:45.716 --> 00:10:50.255
+medal asks which states a backward controller should produce using demonstrations
+
+00:10:50.267 --> 00:10:54.282
+to describe a useful distribution These are related questions but they
+
+00:10:54.294 --> 00:10:57.678
+change different parts of the system risk asks when to switch between
+
+00:10:57.690 --> 00:11:01.693
+goals Its surprising choice is to switch early when the current goal
+
+00:11:01.800 --> 00:11:06.185
+already looks easy freeing interactions for less familiar regions That
+
+00:11:06.197 --> 00:11:10.093
+is a different use of a value-like score from Leave no Trace which aborts
+
+00:11:10.104 --> 00:11:13.691
+when recovery looks poor Confusing those two decisions would invert
+
+00:11:13.750 --> 00:11:17.503
+the intended curriculum The no-regret paper asks what assumptions make
+
+00:11:17.515 --> 00:11:21.566
+performance and intervention guarantees possible More Free asks how
+
+00:11:21.578 --> 00:11:25.748
+a learned world model can improve both exploration and practice while
+
+00:11:25.760 --> 00:11:29.930
+the physical environment continues Throughout the series use the same
+
+00:11:29.941 --> 00:11:34.624
+checklist identify the objective the state distribution the return boundary
+
+00:11:34.886 --> 00:11:38.579
+and the resource being counted Those four choices explain much of the
+
+00:11:38.591 --> 00:11:40.640
+apparent disagreement between methods
+
+00:11:42.591 --> 00:11:46.582
+Open the first laboratory and begin with gamma equal to point nine and
+
+00:11:46.594 --> 00:11:50.502
+an artificial cutoff probability of zero Both value curves agree at
+
+00:11:50.514 --> 00:11:54.600
+ten Increase the false-cutoff probability while keeping the continuing
+
+00:11:54.612 --> 00:11:59.712
+task unchanged The incorrect value drops because each extra mask erases
+
+00:11:59.724 --> 00:12:03.500
+another expected piece of the future The plot is calculated from the
+
+00:12:03.512 --> 00:12:07.766
+fixed-point equations not from a hidden training run Next use the transition
+
+00:12:07.778 --> 00:12:12.591
+calculator Enter reward one and successor value ten then toggle true
+
+00:12:12.603 --> 00:12:16.987
+termination With termination off the target is ten with termination
+
+00:12:16.999 --> 00:12:21.169
+on it is one Toggle only the collector cutoff and watch the correct
+
+00:12:21.181 --> 00:12:25.398
+target stay unchanged This isolates semantics from estimation error
+
+00:12:25.792 --> 00:12:29.294
+we have deliberately supplied the right successor value so that only
+
+00:12:29.306 --> 00:12:33.286
+the boundary decision varies Finally imagine replacing this one-state
+
+00:12:33.298 --> 00:12:37.765
+process with a deadline task The calculator alone is now insufficient
+
+00:12:38.027 --> 00:12:41.447
+because remaining time belongs in the state and the successor value
+
+00:12:41.459 --> 00:12:45.843
+depends on it That limitation is the lesson A formula can be correct
+
+00:12:45.855 --> 00:12:50.466
+for one modeled process and wrong for another Before debugging an optimizer
+
+00:12:50.835 --> 00:12:54.147
+make sure the quantities in its target describe the process you intended
+
+00:12:56.119 --> 00:12:59.717
+We started with an ordinary training convenience and uncovered three
+
+00:12:59.729 --> 00:13:03.971
+distinct mathematical objects The return defines what the critic predicts
+
+00:13:04.376 --> 00:13:07.664
+The physical transition process defines what the robot can actually
+
+00:13:07.676 --> 00:13:12.608
+do The data-collection schedule defines what evidence it sees Many reset-free
+
+00:13:12.620 --> 00:13:16.230
+learning bugs come from using one of those objects as a substitute for
+
+00:13:16.242 --> 00:13:19.900
+another A useful thought experiment is to pause a rollout just before
+
+00:13:19.912 --> 00:13:23.820
+a switch Ask whether the old goal could still be pursued from that exact
+
+00:13:23.832 --> 00:13:28.502
+state If so its continuation value has not disappeared merely because
+
+00:13:28.514 --> 00:13:31.921
+another controller will collect the next action Then ask whether the
+
+00:13:31.933 --> 00:13:35.472
+environment itself has been changed by an external intervention That
+
+00:13:35.484 --> 00:13:39.558
+is a separate event to record and account for In the next lesson we
+
+00:13:39.570 --> 00:13:43.442
+will make recovery an explicit learned skill A forward action will have
+
+00:13:43.454 --> 00:13:47.529
+to pass a reset critic before being executed We will derive what that
+
+00:13:47.541 --> 00:13:52.044
+critic means examine why a high task reward can hide a bad future and
+
+00:13:52.056 --> 00:13:55.678
+test how uncertainty changes the permitted region of exploration The
+
+00:13:55.690 --> 00:13:58.645
+reset button becomes a control problem we can inspect

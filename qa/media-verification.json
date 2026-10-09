@@ -1,0 +1,80 @@
+[
+  {
+    "id": "foundations",
+    "duration": 840.0,
+    "width": 1600,
+    "height": 900,
+    "fps": "20/1",
+    "chapters": 12,
+    "subtitles": 198,
+    "mean_audio_db": -20.0,
+    "peak_audio_db": -2.3,
+    "full_decode_passed": true,
+    "bytes": 19683093
+  },
+  {
+    "id": "leave-no-trace",
+    "duration": 840.0,
+    "width": 1600,
+    "height": 900,
+    "fps": "20/1",
+    "chapters": 12,
+    "subtitles": 198,
+    "mean_audio_db": -20.0,
+    "peak_audio_db": -2.2,
+    "full_decode_passed": true,
+    "bytes": 20020908
+  },
+  {
+    "id": "medal",
+    "duration": 840.0,
+    "width": 1600,
+    "height": 900,
+    "fps": "20/1",
+    "chapters": 12,
+    "subtitles": 204,
+    "mean_audio_db": -20.0,
+    "peak_audio_db": -2.5,
+    "full_decode_passed": true,
+    "bytes": 20076881
+  },
+  {
+    "id": "risc",
+    "duration": 840.0,
+    "width": 1600,
+    "height": 900,
+    "fps": "20/1",
+    "chapters": 12,
+    "subtitles": 201,
+    "mean_audio_db": -19.9,
+    "peak_audio_db": -2.1,
+    "full_decode_passed": true,
+    "bytes": 19717962
+  },
+  {
+    "id": "no-regret",
+    "duration": 840.0,
+    "width": 1600,
+    "height": 900,
+    "fps": "20/1",
+    "chapters": 12,
+    "subtitles": 204,
+    "mean_audio_db": -20.0,
+    "peak_audio_db": -2.1,
+    "full_decode_passed": true,
+    "bytes": 19980134
+  },
+  {
+    "id": "morefree",
+    "duration": 840.0,
+    "width": 1600,
+    "height": 900,
+    "fps": "20/1",
+    "chapters": 12,
+    "subtitles": 207,
+    "mean_audio_db": -20.0,
+    "peak_audio_db": -2.3,
+    "full_decode_passed": true,
+    "bytes": 20511395
+  }
+]

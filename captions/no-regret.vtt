@@ -1,0 +1,613 @@
+WEBVTT
+
+00:00:00.581 --> 00:00:04.212
+An agent that never moves may avoid resets while learning almost nothing
+
+00:00:04.582 --> 00:00:08.432
+An agent that repeatedly crashes and gets restored may learn a rewarding
+
+00:00:08.444 --> 00:00:12.630
+policy while relying on extensive intervention A meaningful theoretical
+
+00:00:12.641 --> 00:00:17.081
+objective should rule out both shortcuts Nguyen and Cheng study performance
+
+00:00:17.093 --> 00:00:21.371
+regret and reset cost together asking whether both can grow sublinearly
+
+00:00:21.452 --> 00:00:24.898
+with the number of learning episodes Sublinear growth means that the
+
+00:00:24.910 --> 00:00:28.795
+total divided by the number of episodes tends to zero A square-root
+
+00:00:28.806 --> 00:00:32.865
+curve is the familiar example it grows forever but more slowly than
+
+00:00:32.876 --> 00:00:36.854
+a straight line Its average rate falls toward zero This is already an
+
+00:00:36.866 --> 00:00:40.254
+important distinction from a promise of zero resets during training
+
+00:00:40.450 --> 00:00:44.347
+or a finite last reset after which assistance is never needed again
+
+00:00:44.740 --> 00:00:48.567
+The paper's contribution is a reduction It turns reset-free learning
+
+00:00:48.579 --> 00:00:52.429
+into a two-player online optimization problem If the players achieve
+
+00:00:52.545 --> 00:00:56.453
+suitable no-regret guarantees the learning system inherits bounds on
+
+00:00:56.465 --> 00:01:01.252
+both performance and resets We will derive the bridge identify the assumptions
+
+00:01:01.264 --> 00:01:04.756
+making it possible and use a small payoff example to understand the
+
+00:01:04.767 --> 00:01:06.270
+role of the reset penalty
+
+00:01:08.219 --> 00:01:11.920
+The theorem uses finite-horizon episodes but it does not assume that
+
+00:01:11.931 --> 00:01:15.782
+the environment is freely restored to a fixed start after every episode
+
+00:01:16.163 --> 00:01:20.326
+If no reset event occurs the physical state carries into the next round
+
+00:01:20.499 --> 00:01:24.604
+while the episode's time index restarts Consequently the initial state
+
+00:01:24.616 --> 00:01:28.593
+of each round depends on what the learner did before This adaptive sequence
+
+00:01:28.709 --> 00:01:32.502
+is central to the problem The environment has designated reset states
+
+00:01:32.883 --> 00:01:37.011
+Entering one ends the round early and invokes the reset mechanism The
+
+00:01:37.023 --> 00:01:41.278
+formulation counts at most one such event in an episode After intervention
+
+00:01:41.544 --> 00:01:44.805
+the next starting state can again depend on the interaction history
+
+00:01:45.198 --> 00:01:48.621
+Do not confuse these counted external resets with a learned backward
+
+00:01:48.632 --> 00:01:52.968
+controller physically moving through ordinary states This modeling choice
+
+00:01:53.038 --> 00:01:57.223
+is precise and useful but it is not the most general continuing average-reward
+
+00:01:57.235 --> 00:02:01.883
+process It is a finite-horizon framework embedded in ongoing physical
+
+00:02:01.895 --> 00:02:06.220
+interaction The assumptions and theorem should be read within that framework
+
+00:02:06.601 --> 00:02:10.417
+In particular the comparator and cost will be evaluated on the adaptive
+
+00:02:10.428 --> 00:02:14.302
+starts actually encountered rather than on a freely chosen fixed initial
+
+00:02:14.314 --> 00:02:14.926
+distribution
+
+00:02:16.911 --> 00:02:20.542
+For each encountered initial state compare the learner's expected task
+
+00:02:20.554 --> 00:02:24.566
+return with that of a fixed feasible Markovian comparator policy Sum
+
+00:02:24.577 --> 00:02:28.162
+those differences across episodes then choose the best comparator in
+
+00:02:28.174 --> 00:02:32.857
+the set that avoids resets at all relevant starts This defines performance
+
+00:02:32.868 --> 00:02:36.696
+regret It is a comparison on the learner's encountered states not a
+
+00:02:36.707 --> 00:02:40.176
+counterfactual comparison between two completely different lifetime
+
+00:02:40.188 --> 00:02:44.651
+trajectories For reset cost assign a cost when the process reaches a
+
+00:02:44.662 --> 00:02:49.299
+reset state Because the episode stops at its first such event its cumulative
+
+00:02:49.311 --> 00:02:53.982
+cost is either zero or one The cost value is therefore the probability
+
+00:02:53.994 --> 00:02:58.145
+of needing a reset in that episode Summing those expected costs gives
+
+00:02:58.156 --> 00:03:01.764
+the paper's reset measure conditional on the relevant starting states
+
+00:03:01.776 --> 00:03:05.777
+and policies This expected quantity should not be silently replaced
+
+00:03:05.788 --> 00:03:09.766
+by an exact observed count on every random run The paper's learning
+
+00:03:09.777 --> 00:03:13.547
+guarantees have their stated probability conditions while the value-based
+
+00:03:13.558 --> 00:03:17.571
+reset measure already contains an expectation over episode dynamics
+
+00:03:17.964 --> 00:03:21.491
+Keeping these layers separate prevents a high-probability learning statement
+
+00:03:21.676 --> 00:03:25.526
+from being mistaken for a deterministic assurance that no individual
+
+00:03:25.538 --> 00:03:27.191
+run will experience a failure
+
+00:03:29.149 --> 00:03:32.641
+Suppose every action from a certain starting state inevitably causes
+
+00:03:32.652 --> 00:03:37.000
+a reset No algorithm can achieve a vanishing reset rate if that state
+
+00:03:37.012 --> 00:03:41.382
+appears every round The paper therefore assumes that a reset-free Markovian
+
+00:03:41.394 --> 00:03:45.233
+policy exists for the relevant sequence of episode starts This makes
+
+00:03:45.245 --> 00:03:49.107
+the comparison class nonempty and establishes that the requested behavior
+
+00:03:49.118 --> 00:03:52.876
+is possible in the modeled problem The assumption is stronger than saying
+
+00:03:52.888 --> 00:03:57.097
+the very first state has a safe action Unknown dynamics can lead the
+
+00:03:57.108 --> 00:04:00.658
+learner to later starts with different possibilities The theorem has
+
+00:04:00.670 --> 00:04:04.300
+to handle those starts too Its feasibility assumption is attached to
+
+00:04:04.312 --> 00:04:08.093
+the sequence encountered under the reset mechanism not merely to the
+
+00:04:08.105 --> 00:04:11.863
+initial demonstration or a designer's favorite nominal configuration
+
+00:04:12.256 --> 00:04:16.881
+The formulation also treats bad absorbing states as reset states preventing
+
+00:04:16.892 --> 00:04:21.044
+a learner from hiding forever in a useless trap to report low intervention
+
+00:04:21.055 --> 00:04:25.021
+cost These details matter because they connect the mathematical performance
+
+00:04:25.033 --> 00:04:29.045
+measures to the intended practical question Without a sensible reset
+
+00:04:29.057 --> 00:04:33.173
+mechanism and meaningful encountered starts small regret could describe
+
+00:04:33.185 --> 00:04:36.607
+a comparison that says very little about useful autonomous learning
+
+00:04:38.585 --> 00:04:42.724
+For a fixed episode start write a constrained decision problem maximize
+
+00:04:42.736 --> 00:04:47.685
+task return subject to zero expected reset cost Since reset costs are
+
+00:04:47.696 --> 00:04:51.986
+nonnegative zero expected cost means no reset event under the feasible
+
+00:04:51.998 --> 00:04:55.895
+policy in that modeled episode The challenge is learning such behavior
+
+00:04:55.906 --> 00:04:59.803
+with unknown dynamics while the initial state changes adaptively from
+
+00:04:59.814 --> 00:05:03.873
+round to round Introduce a nonnegative Lagrange multiplier that subtracts
+
+00:05:03.885 --> 00:05:08.475
+a price times reset cost from reward For one fixed start a scalar price
+
+00:05:08.487 --> 00:05:12.973
+may suffice Across changing starts the paper uses a multiplier function
+
+00:05:13.042 --> 00:05:16.465
+of the initial state This is a substantive feature of the reduction
+
+00:05:16.858 --> 00:05:20.477
+Different starts can have different reward-versus-reset tradeoffs so
+
+00:05:20.489 --> 00:05:24.525
+one universal penalty is not the object used in the theorem The resulting
+
+00:05:24.536 --> 00:05:28.340
+Lagrangian is a payoff between a policy player and a penalty player
+
+00:05:28.733 --> 00:05:32.757
+The policy player tries to maximize reward after the reset charge The
+
+00:05:32.769 --> 00:05:36.677
+penalty player tries to minimize that same payoff Larger penalties make
+
+00:05:36.689 --> 00:05:40.690
+reset-prone policies less attractive We can understand this interaction
+
+00:05:40.701 --> 00:05:43.997
+with a two-choice example before dealing with the shared saddle point
+
+00:05:44.008 --> 00:05:46.517
+required across the sequence of decision problems
+
+00:05:48.453 --> 00:05:52.477
+Consider two abstract policy choices The safe choice earns expected
+
+00:05:52.488 --> 00:05:57.044
+reward point five and has zero reset cost The risky choice earns point
+
+00:05:57.056 --> 00:06:01.924
+five plus a bonus b and incurs a reset with probability p Its penalized
+
+00:06:01.935 --> 00:06:06.514
+payoff is point five plus b minus lambda times p These are deliberately
+
+00:06:06.584 --> 00:06:10.191
+simple policy-level numbers not a simulation of the paper's learning
+
+00:06:10.203 --> 00:06:14.007
+algorithm The risky choice wins when its bonus exceeds its expected
+
+00:06:14.019 --> 00:06:18.783
+reset charge Set the payoffs equal and solve the crossing penalty is
+
+00:06:18.794 --> 00:06:23.119
+b divided by p With bonus point three and reset probability point two
+
+00:06:23.408 --> 00:06:27.467
+the crossing is one point five Below that price the reward incentive
+
+00:06:27.478 --> 00:06:31.583
+dominates Above it the safe choice has the larger Lagrangian payoff
+
+00:06:31.976 --> 00:06:35.468
+This picture explains why a dual learner can influence exploration through
+
+00:06:35.480 --> 00:06:39.619
+a changing cost price It also explains why an arbitrary fixed penalty
+
+00:06:39.712 --> 00:06:43.366
+can be inadequate If the price bound never reaches the needed range
+
+00:06:43.562 --> 00:06:47.505
+the risky option stays attractive In the full theorem the existence
+
+00:06:47.598 --> 00:06:51.390
+and representability of a suitable multiplier function are mathematical
+
+00:06:51.402 --> 00:06:55.264
+conditions not details that can be ignored after drawing the two lines
+
+00:06:57.238 --> 00:07:00.730
+For a single constrained problem saddle-point reasoning is familiar
+
+00:07:01.135 --> 00:07:04.858
+the policy seeks a high payoff and the penalty seeks a low one But a
+
+00:07:04.870 --> 00:07:08.269
+sequence of different initial states produces a sequence of constrained
+
+00:07:08.281 --> 00:07:12.964
+problems In general their best policies and multipliers need not coincide
+
+00:07:13.334 --> 00:07:17.404
+A reduction to one online game would be much less useful without a common
+
+00:07:17.415 --> 00:07:21.856
+comparator The paper proves a shared saddle-point result for its particular
+
+00:07:21.867 --> 00:07:26.203
+reset-free formulation A Markovian policy and a multiplier function
+
+00:07:26.215 --> 00:07:30.921
+work across the feasible initial states The proof uses the special zero-reset
+
+00:07:30.933 --> 00:07:34.795
+constraint and the feasibility structure This common pair is what lets
+
+00:07:34.806 --> 00:07:38.599
+the later regret bounds compare all rounds against compatible objects
+
+00:07:38.610 --> 00:07:42.496
+despite the adaptive initial-state sequence There is another subtlety
+
+00:07:42.877 --> 00:07:46.774
+A common shortcut in constrained optimization assumes a strictly feasible
+
+00:07:46.786 --> 00:07:51.052
+point Here reset cost is nonnegative and the constraint demands zero
+
+00:07:51.411 --> 00:07:55.273
+so a strictly negative cost is impossible The paper establishes the
+
+00:07:55.284 --> 00:07:58.973
+needed result without relying on that shortcut The existence of the
+
+00:07:58.984 --> 00:08:03.286
+shared saddle point is a theorem to justify not a generic fact about
+
+00:08:03.413 --> 00:08:05.610
+every constrained reinforcement-learning problem
+
+00:08:07.556 --> 00:08:11.337
+Primal regret asks how much more Lagrangian payoff a fixed comparator
+
+00:08:11.348 --> 00:08:14.817
+policy would have earned against the penalties actually played Dual
+
+00:08:14.829 --> 00:08:18.575
+regret asks how much less payoff a fixed comparator multiplier would
+
+00:08:18.587 --> 00:08:22.310
+have allowed against the policies actually played The signs differ because
+
+00:08:22.322 --> 00:08:26.426
+the policy player maximizes and the dual player minimizes Write the
+
+00:08:26.438 --> 00:08:30.497
+signs carefully before trying to use either bound Add the two expressions
+
+00:08:30.890 --> 00:08:34.336
+The payoff of the actual policy paired with the actual multiplier appears
+
+00:08:34.347 --> 00:08:38.568
+once with a minus sign and once with a plus sign so it cancels What
+
+00:08:38.579 --> 00:08:41.852
+remains compares the comparator policy against played penalties with
+
+00:08:41.863 --> 00:08:46.014
+played policies against the comparator penalty This simple cancellation
+
+00:08:46.095 --> 00:08:50.639
+is the algebraic hinge of the reduction No regret means these accumulated
+
+00:08:50.651 --> 00:08:54.490
+disadvantages grow sublinearly for the required comparators It does
+
+00:08:54.501 --> 00:08:58.491
+not mean every individual round improves or that each player receives
+
+00:08:58.502 --> 00:09:02.145
+full information about an unknown environment The policy player still
+
+00:09:02.156 --> 00:09:06.365
+has to explore and learn an online sequence of decision problems That
+
+00:09:06.377 --> 00:09:10.227
+statistical work is essential when the reduction is instantiated as
+
+00:09:10.239 --> 00:09:12.343
+an actual reinforcement-learning algorithm
+
+00:09:14.304 --> 00:09:17.843
+For the performance bound choose the feasible shared comparator policy
+
+00:09:18.120 --> 00:09:21.913
+and set the dual comparator to zero In the cancellation formula the
+
+00:09:21.924 --> 00:09:26.503
+comparator policy's reset cost vanishes The played policy's zero-penalty
+
+00:09:26.515 --> 00:09:31.036
+payoff is simply its reward What remains is precisely the reward comparison
+
+00:09:31.048 --> 00:09:34.817
+we wanted giving the performance-regret inequality displayed on screen
+
+00:09:35.233 --> 00:09:39.570
+For resets the paper uses a multiplier equal to the shared saddle multiplier
+
+00:09:39.581 --> 00:09:43.605
+plus one The original saddle inequality says the feasible policy is
+
+00:09:43.617 --> 00:09:47.583
+at least as good as a played policy after charging the original penalty
+
+00:09:47.964 --> 00:09:52.069
+Adding one extra unit of penalty leaves the played policy's reset cost
+
+00:09:52.312 --> 00:09:56.197
+as an additional nonnegative quantity in the comparator gap Summing
+
+00:09:56.209 --> 00:09:59.909
+that relation and applying the same regret cancellation bounds cumulative
+
+00:09:59.920 --> 00:10:04.522
+expected resets by primal regret plus dual regret against the shifted
+
+00:10:04.534 --> 00:10:09.275
+multiplier This is the core reduction suitable no-regret learners control
+
+00:10:09.344 --> 00:10:13.241
+both objectives Notice that the two bounds use different dual comparators
+
+00:10:13.623 --> 00:10:17.427
+Dropping that detail would obscure why one inequality measures reward
+
+00:10:17.681 --> 00:10:19.554
+and the other measures intervention cost
+
+00:10:21.488 --> 00:10:25.466
+The abstract reduction still needs concrete players The paper instantiates
+
+00:10:25.477 --> 00:10:30.079
+them in a linear M D P setting using known features that represent transition
+
+00:10:30.091 --> 00:10:34.843
+dynamics rewards and reset costs through unknown parameters It also
+
+00:10:34.855 --> 00:10:38.359
+assumes a known feature representation and bounded convex parameter
+
+00:10:38.370 --> 00:10:42.186
+set for a suitable optimal multiplier function These are structural
+
+00:10:42.197 --> 00:10:45.990
+assumptions about the problem class not properties of every neural robot
+
+00:10:46.002 --> 00:10:50.373
+learner The policy side uses optimistic value estimates to handle unknown
+
+00:10:50.384 --> 00:10:54.570
+dynamics and the dual side uses projected gradient updates Under the
+
+00:10:54.581 --> 00:10:58.432
+stated feasibility and linearity assumptions the theorem bounds both
+
+00:10:58.443 --> 00:11:02.548
+performance regret and expected reset cost by a rate proportional to
+
+00:11:02.560 --> 00:11:07.890
+B plus one times the square root of d cubed H to the fourth and K up
+
+00:11:07.902 --> 00:11:12.550
+to logarithmic factors With dimension horizon and multiplier bound fixed
+
+00:11:12.793 --> 00:11:16.794
+this is square-root growth in the number of episodes Dividing by K gives
+
+00:11:16.806 --> 00:11:20.910
+a rate that decreases like one over square root K The constants and
+
+00:11:20.922 --> 00:11:24.900
+structural assumptions remain relevant This is not a theorem that arbitrary
+
+00:11:24.911 --> 00:11:28.970
+deep R L will eventually operate without intervention nor a claim that
+
+00:11:28.981 --> 00:11:32.161
+total resets stop growing after a finite training time
+
+00:11:34.108 --> 00:11:38.513
+In the theory laboratory set the risky bonus and reset probability then
+
+00:11:38.525 --> 00:11:42.710
+run the two-choice price game The policy uses an exact best response
+
+00:11:42.722 --> 00:11:46.538
+to the current price The dual update increases the price by learning
+
+00:11:46.549 --> 00:11:50.758
+rate times expected reset cost then projects onto a declared interval
+
+00:11:51.151 --> 00:11:55.233
+Because the payoff contains minus lambda times cost gradient descent
+
+00:11:55.291 --> 00:11:59.361
+on the dual payoff produces this plus sign The display plots the price
+
+00:11:59.373 --> 00:12:04.056
+trajectory and reports accumulated expected reset cost It does not sample
+
+00:12:04.067 --> 00:12:08.704
+crashes learn unknown dynamics or implement the paper's optimistic linear-M
+
+00:12:08.716 --> 00:12:13.110
+D P algorithm This deliberately small experiment isolates how a penalty
+
+00:12:13.191 --> 00:12:16.891
+can change the preferred policy Lower the price cap below the crossing
+
+00:12:16.902 --> 00:12:20.972
+value and observe why the risky choice can remain attractive indefinitely
+
+00:12:21.354 --> 00:12:24.846
+A separate curve shows square-root growth and its corresponding average
+
+00:12:25.228 --> 00:12:29.321
+Those lines illustrate asymptotic scaling only they are not numerical
+
+00:12:29.333 --> 00:12:33.345
+theorem bounds with hidden constants or measured benchmark results Watch
+
+00:12:33.356 --> 00:12:37.114
+the total continue rising while the average falls That one picture is
+
+00:12:37.126 --> 00:12:41.254
+the most useful antidote to interpreting sublinear resets as a guarantee
+
+00:12:41.323 --> 00:12:43.786
+that there will eventually be no more resets at all
+
+00:12:45.738 --> 00:12:50.062
+The theory lesson is a chain First define meaningful reward and reset
+
+00:12:50.074 --> 00:12:54.664
+costs on the encountered initial states Next assume a feasible reset-free
+
+00:12:54.676 --> 00:12:58.469
+comparator exists Then prove a common saddle-point structure across
+
+00:12:58.480 --> 00:13:03.198
+those starts Finally use primal and dual regret bounds to control both
+
+00:13:03.210 --> 00:13:08.020
+performance and interventions A concrete linear-M D P algorithm supplies
+
+00:13:08.031 --> 00:13:12.240
+one way to satisfy the reduction's learning requirements Each link answers
+
+00:13:12.252 --> 00:13:16.033
+a different question Feasibility says the desired behavior is possible
+
+00:13:16.426 --> 00:13:19.779
+The saddle-point theorem says the sequence of constrained problems has
+
+00:13:19.791 --> 00:13:23.942
+compatible reference solutions The regret reduction translates online
+
+00:13:23.954 --> 00:13:27.781
+optimization performance into reinforcement-learning performance The
+
+00:13:27.792 --> 00:13:31.631
+linear assumptions make a particular statistical rate available Removing
+
+00:13:31.643 --> 00:13:35.783
+a link requires a new argument not simply reusing the final square-root
+
+00:13:35.794 --> 00:13:39.506
+expression Our final paper returns to a practical learning mechanism
+
+00:13:39.853 --> 00:13:43.669
+world models Instead of proving that a specific linear representation
+
+00:13:43.888 --> 00:13:48.386
+yields a reset bound More Free learns a predictive model and uses imagined
+
+00:13:48.398 --> 00:13:52.248
+trajectories to train goal-reaching behavior The challenge will be deciding
+
+00:13:52.260 --> 00:13:55.983
+what to practice in imagination and where to collect real data while
+
+00:13:55.995 --> 00:13:58.666
+the physical world remains stubbornly unresettable

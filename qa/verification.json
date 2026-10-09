@@ -1,0 +1,414 @@
+{
+  "passed": 72,
+  "checks": [
+    {
+      "name": "six episode selectors",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "foundations media duration",
+      "passed": true,
+      "detail": 840
+    },
+    {
+      "name": "foundations chapter count",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "foundations chapter seeking",
+      "passed": true,
+      "detail": {
+        "t": 488.743323,
+        "paused": false,
+        "err": null
+      }
+    },
+    {
+      "name": "foundations playback started",
+      "passed": true,
+      "detail": {
+        "t": 488.743323,
+        "paused": false,
+        "err": null
+      }
+    },
+    {
+      "name": "foundations live laboratory",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "foundations slider changes calculation",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "foundations derivation count",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "foundations math SVGs load",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "leave-no-trace media duration",
+      "passed": true,
+      "detail": 840
+    },
+    {
+      "name": "leave-no-trace chapter count",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "leave-no-trace chapter seeking",
+      "passed": true,
+      "detail": {
+        "t": 491.394846,
+        "paused": false,
+        "err": null
+      }
+    },
+    {
+      "name": "leave-no-trace playback started",
+      "passed": true,
+      "detail": {
+        "t": 491.394846,
+        "paused": false,
+        "err": null
+      }
+    },
+    {
+      "name": "leave-no-trace live laboratory",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "leave-no-trace slider changes calculation",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "leave-no-trace derivation count",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "leave-no-trace math SVGs load",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "medal media duration",
+      "passed": true,
+      "detail": 840
+    },
+    {
+      "name": "medal chapter count",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "medal chapter seeking",
+      "passed": true,
+      "detail": {
+        "t": 486.191641,
+        "paused": false,
+        "err": null
+      }
+    },
+    {
+      "name": "medal playback started",
+      "passed": true,
+      "detail": {
+        "t": 486.191641,
+        "paused": false,
+        "err": null
+      }
+    },
+    {
+      "name": "medal live laboratory",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "MEDAL performs distribution updates",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "MEDAL binwise table",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "medal derivation count",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "medal math SVGs load",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "risc media duration",
+      "passed": true,
+      "detail": 840
+    },
+    {
+      "name": "risc chapter count",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "risc chapter seeking",
+      "passed": true,
+      "detail": {
+        "t": 483.548059,
+        "paused": false,
+        "err": null
+      }
+    },
+    {
+      "name": "risc playback started",
+      "passed": true,
+      "detail": {
+        "t": 483.548059,
+        "paused": false,
+        "err": null
+      }
+    },
+    {
+      "name": "risc live laboratory",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "risc slider changes calculation",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "risc derivation count",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "risc math SVGs load",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "no-regret media duration",
+      "passed": true,
+      "detail": 840
+    },
+    {
+      "name": "no-regret chapter count",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "no-regret chapter seeking",
+      "passed": true,
+      "detail": {
+        "t": 487.54567,
+        "paused": false,
+        "err": null
+      }
+    },
+    {
+      "name": "no-regret playback started",
+      "passed": true,
+      "detail": {
+        "t": 487.54567,
+        "paused": false,
+        "err": null
+      }
+    },
+    {
+      "name": "no-regret live laboratory",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "no-regret slider changes calculation",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "no-regret derivation count",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "no-regret math SVGs load",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "morefree media duration",
+      "passed": true,
+      "detail": 840
+    },
+    {
+      "name": "morefree chapter count",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "morefree chapter seeking",
+      "passed": true,
+      "detail": {
+        "t": 485.941181,
+        "paused": false,
+        "err": null
+      }
+    },
+    {
+      "name": "morefree playback started",
+      "passed": true,
+      "detail": {
+        "t": 485.941181,
+        "paused": false,
+        "err": null
+      }
+    },
+    {
+      "name": "morefree live laboratory",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "morefree slider changes calculation",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "morefree derivation count",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "morefree math SVGs load",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "continuing one-state value is ten",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "false cutoff value is 25/7",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "handoff preserves target ten",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "matched distributions have JS zero",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "no eligibility reaches maximum",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "unit hazard switches at minimum",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "beta one disables early switching",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "price reaches crossing after fifteen risky rounds",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "insufficient cap leaves every round risky",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "MoReFree exact default goal weights",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "paired call fraction is one third",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "constant gain error is three",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "all 216 equation references resolve",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "foundations mobile page fits viewport",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "leave-no-trace mobile page fits viewport",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "medal mobile page fits viewport",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "risc mobile page fits viewport",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "no-regret mobile page fits viewport",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "morefree mobile page fits viewport",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "standalone companion selects its lesson",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "offline laboratory computes",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "no JavaScript exceptions",
+      "passed": true,
+      "detail": []
+    }
+  ],
+  "errors": []
+}

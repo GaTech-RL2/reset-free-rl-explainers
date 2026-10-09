@@ -1,0 +1,803 @@
+1
+00:00:00,608 --> 00:00:04,696
+Picture a robot moving between two ends of a corridor Near either end
+
+2
+00:00:05,091 --> 00:00:08,558
+reaching that nearby goal has become routine The interesting learning
+
+3
+00:00:08,570 --> 00:00:12,300
+happens around obstacles in the middle A fixed schedule keeps sending
+
+4
+00:00:12,312 --> 00:00:15,839
+the robot all the way through mastered segments before turning around
+
+5
+00:00:16,234 --> 00:00:19,880
+Those extra interactions may add little new information about the parts
+
+6
+00:00:19,892 --> 00:00:24,459
+of the task it still struggles with risk proposes an unusual stopping
+
+7
+00:00:24,471 --> 00:00:28,130
+rule switch away from the current goal when the agent is confident it
+
+8
+00:00:28,142 --> 00:00:31,728
+can reach it The goal need not have been physically reached yet This
+
+9
+00:00:31,740 --> 00:00:35,901
+can shift practice toward less familiar state-goal combinations It is
+
+10
+00:00:35,913 --> 00:00:39,775
+a curriculum mechanism for allocating experience rather than a failure
+
+11
+00:00:39,787 --> 00:00:43,863
+detector that activates whenever progress looks poor Compare this carefully
+
+12
+00:00:43,959 --> 00:00:48,729
+with Leave no Trace There low predicted recovery value rejects a potentially
+
+13
+00:00:48,741 --> 00:00:52,794
+troublesome action Here high competence on the current goal increases
+
+14
+00:00:52,806 --> 00:00:56,285
+the chance of handing off to another goal The two scores answer different
+
+15
+00:00:56,297 --> 00:01:01,056
+questions This lesson first fixes the value semantics at a handoff then
+
+16
+00:01:01,068 --> 00:01:04,535
+derives the competence score and the controls that prevent excessive
+
+17
+00:01:04,547 --> 00:01:04,953
+switching
+
+18
+00:01:06,909 --> 00:01:10,950
+At a handoff the behavior controller changes which goal it pursues But
+
+19
+00:01:10,962 --> 00:01:14,465
+what should happen to the critic for the old goal If that critic estimates
+
+20
+00:01:14,477 --> 00:01:18,578
+the return of continuing toward the old goal its future has not vanished
+
+21
+00:01:18,984 --> 00:01:22,583
+The successor state still exists and an imagined continuation of the
+
+22
+00:01:22,595 --> 00:01:26,815
+old policy can still have value from that state Off-policy learning
+
+23
+00:01:26,827 --> 00:01:30,928
+separates the policy collecting transitions from the policy being evaluated
+
+24
+00:01:31,011 --> 00:01:34,981
+or improved A goal-conditioned critic can therefore bootstrap using
+
+25
+00:01:34,993 --> 00:01:38,986
+the original goal even if the next real action is collected for a different
+
+26
+00:01:38,998 --> 00:01:43,433
+goal The update must use an appropriate off-policy method and goal-consistent
+
+27
+00:01:43,445 --> 00:01:47,714
+reward We are not claiming that an arbitrary on-policy trajectory can
+
+28
+00:01:47,726 --> 00:01:51,348
+be relabeled without correction The important modeling choice is the
+
+29
+00:01:51,360 --> 00:01:55,712
+return being estimated If you intentionally define a hierarchical option
+
+30
+00:01:55,724 --> 00:01:59,442
+whose return ends at handoff that is a different objective and may have
+
+31
+00:01:59,454 --> 00:02:03,208
+a different target risk's argument concerns critics for the underlying
+
+32
+00:02:03,268 --> 00:02:07,166
+goal-conditioned control task Treating the scheduler's handoff as their
+
+33
+00:02:07,178 --> 00:02:11,099
+terminal event changes those critics into something the method did not
+
+34
+00:02:11,111 --> 00:02:11,864
+intend to learn
+
+35
+00:02:13,825 --> 00:02:18,452
+Suppose the successor value is eight reward is zero and gamma is point
+
+36
+00:02:18,464 --> 00:02:22,947
+nine The continuation target is seven point two If a scheduler happens
+
+37
+00:02:22,959 --> 00:02:26,713
+to switch goals at that transition and we label it terminal the target
+
+38
+00:02:26,725 --> 00:02:30,766
+becomes zero Nothing about the goal-reaching dynamics changed Only the
+
+39
+00:02:30,778 --> 00:02:34,508
+behavior schedule changed yet the critic receives a radically different
+
+40
+00:02:34,520 --> 00:02:38,502
+learning signal Now let the scheduler improve over training It starts
+
+41
+00:02:38,514 --> 00:02:42,495
+switching earlier in familiar regions Under the false-terminal convention
+
+42
+00:02:42,877 --> 00:02:47,421
+those very regions receive more zeroed continuation targets The critic's
+
+43
+00:02:47,433 --> 00:02:51,199
+meaning drifts with the switching policy In a forward-backward system
+
+44
+00:02:51,462 --> 00:02:55,419
+the distribution of states also depends on both controllers making this
+
+45
+00:02:55,431 --> 00:02:59,460
+coupling more complicated than a fixed time limit in an ordinary episodic
+
+46
+00:02:59,472 --> 00:03:03,979
+benchmark risk uses timeout-nonterminal bootstrapping at these handoffs
+
+47
+00:03:04,087 --> 00:03:08,451
+to preserve the continuation targets True goal success can still terminate
+
+48
+00:03:08,463 --> 00:03:12,313
+the success return under its own definition The distinction is between
+
+49
+00:03:12,324 --> 00:03:16,126
+a boundary in behavior collection and a boundary in the modeled task
+
+50
+00:03:16,533 --> 00:03:19,904
+The companion target calculator lets you change the switching decision
+
+51
+00:03:20,096 --> 00:03:23,348
+while holding reward successor state and goal constant
+
+52
+00:03:25,300 --> 00:03:28,504
+risk needs a measure of how well the current policy can achieve its
+
+53
+00:03:28,516 --> 00:03:33,263
+goal A useful choice rewards first success and discounts delay The sooner
+
+54
+00:03:33,275 --> 00:03:37,878
+the goal is reached the larger the score Failure to ever reach it contributes
+
+55
+00:03:37,890 --> 00:03:42,457
+zero This naturally combines ability and distance in one value-like
+
+56
+00:03:42,469 --> 00:03:45,864
+quantity that can be learned with familiar temporal difference machinery
+
+57
+00:03:46,271 --> 00:03:50,347
+There is a small indexing convention worth making explicit In the implemented
+
+58
+00:03:50,359 --> 00:03:54,819
+recurrence success on the very next transition receives reward one without
+
+59
+00:03:54,831 --> 00:03:59,733
+discount If tau counts transitions until success the corresponding return
+
+60
+00:03:59,828 --> 00:04:04,539
+is gamma to tau minus one The paper also describes the intuition using
+
+61
+00:04:04,551 --> 00:04:08,998
+gamma to a hitting-time index A one-step shift in the index is bookkeeping
+
+62
+00:04:09,309 --> 00:04:13,063
+not a different curriculum principle For stochastic trajectories the
+
+63
+00:04:13,075 --> 00:04:17,642
+learned critic estimates an expectation over possible outcomes rather
+
+64
+00:04:17,654 --> 00:04:22,126
+than the shortest path over all imaginable actions A policy that sometimes
+
+65
+00:04:22,138 --> 00:04:25,617
+succeeds quickly and sometimes fails can share a score with a slower
+
+66
+00:04:26,011 --> 00:04:29,502
+more reliable policy The score is therefore a discounted competence
+
+67
+00:04:29,514 --> 00:04:33,448
+measure It is not automatically a calibrated probability of eventual
+
+68
+00:04:33,460 --> 00:04:36,461
+success as the paper explicitly emphasizes
+
+69
+00:04:38,413 --> 00:04:42,108
+Let f be a function that tells us whether the successor state satisfies
+
+70
+00:04:42,120 --> 00:04:46,209
+the current goal If it does the first-success return is one and there
+
+71
+00:04:46,220 --> 00:04:50,776
+is no additional tail If it does not the score is gamma times the estimated
+
+72
+00:04:50,788 --> 00:04:54,530
+continuation under the same goal-conditioned policy Combining those
+
+73
+00:04:54,542 --> 00:04:58,272
+two cases gives the target on screen This recurrence explains why the
+
+74
+00:04:58,284 --> 00:05:02,803
+score stays between zero and one in the ideal setting The success branch
+
+75
+00:05:02,935 --> 00:05:06,653
+is exactly one The other branch discounts an existing score in that
+
+76
+00:05:06,665 --> 00:05:10,825
+range Starting with bounded values the true fixed point respects the
+
+77
+00:05:10,837 --> 00:05:15,237
+same bounds A neural approximation can still produce poorly calibrated
+
+78
+00:05:15,249 --> 00:05:19,015
+estimates unless its representation and training handle that constraint
+
+79
+00:05:19,027 --> 00:05:23,188
+appropriately The success critic is trained alongside the ordinary task
+
+80
+00:05:23,200 --> 00:05:27,265
+critic using the agent's experience It requires a success function for
+
+81
+00:05:27,276 --> 00:05:31,891
+the relevant task and reset goals It does not infer those goal specifications
+
+82
+00:05:31,903 --> 00:05:36,076
+from nothing At a collector handoff bootstrap the unsatisfied current
+
+83
+00:05:36,088 --> 00:05:41,205
+goal at actual first success use the success branch Two different boundaries
+
+84
+00:05:41,217 --> 00:05:44,313
+again receive different treatment because they have different meanings
+
+85
+00:05:46,280 --> 00:05:50,369
+Suppose we directly use a competence score of point one as the probability
+
+86
+00:05:50,381 --> 00:05:54,757
+of switching at every step That number may sound small But with independent
+
+87
+00:05:54,769 --> 00:05:59,455
+trials and a constant hazard the expected waiting time is only ten steps
+
+88
+00:05:59,862 --> 00:06:03,437
+If both directions have moderately high scores in the same region the
+
+89
+00:06:03,448 --> 00:06:07,418
+robot can keep turning around there instead of reaching unfamiliar territory
+
+90
+00:06:07,812 --> 00:06:11,889
+This is a useful distinction between a per-step probability and a trajectory-level
+
+91
+00:06:11,901 --> 00:06:16,492
+probability Ten percent per step does not mean only ten percent of trajectories
+
+92
+00:06:16,504 --> 00:06:20,808
+switch Over many opportunities the chance of at least one switch becomes
+
+93
+00:06:20,820 --> 00:06:24,825
+large The product of the probabilities of not switching determines how
+
+94
+00:06:24,837 --> 00:06:28,783
+much of the trajectory survives to a given time risk therefore adds
+
+95
+00:06:28,795 --> 00:06:32,824
+three controls rather than feeding the score directly into an unrestricted
+
+96
+00:06:32,836 --> 00:06:37,068
+coin flip It chooses only a portion of trajectories for early switching
+
+97
+00:06:37,415 --> 00:06:41,850
+enforces a minimum trajectory length and gradually relaxes an initially
+
+98
+00:06:41,862 --> 00:06:45,963
+conservative factor These controls preserve sustained behavior long
+
+99
+00:06:45,975 --> 00:06:50,016
+enough to move through the state space We will derive their joint effect
+
+100
+00:06:50,028 --> 00:06:53,172
+instead of hiding them inside a single hyperparameter
+
+101
+00:06:55,115 --> 00:06:59,300
+At the beginning of a trajectory draw one eligibility coin with probability
+
+102
+00:06:59,312 --> 00:07:03,735
+zeta If that coin fails do not perform intelligent early-switch checks
+
+103
+00:07:03,747 --> 00:07:07,693
+during that trajectory This is not the same as independently multiplying
+
+104
+00:07:07,705 --> 00:07:12,858
+the hazard by zeta at every step An eligible trajectory keeps its eligibility
+
+105
+00:07:13,157 --> 00:07:17,257
+and an ineligible one keeps the opportunity to travel farther For an
+
+106
+00:07:17,269 --> 00:07:21,765
+eligible trajectory wait until its length reaches the minimum m After
+
+107
+00:07:21,777 --> 00:07:25,650
+that multiply the competence score by one minus beta raised to the current
+
+108
+00:07:25,662 --> 00:07:30,265
+trajectory length With beta near one this factor starts small and grows
+
+109
+00:07:30,277 --> 00:07:35,263
+gradually With beta equal to one exactly the factor remains zero the
+
+110
+00:07:35,275 --> 00:07:38,849
+often-stated limit toward the competence score requires beta strictly
+
+111
+00:07:38,861 --> 00:07:43,177
+below one Actual goal success triggers a switch and a maximum length
+
+112
+00:07:43,321 --> 00:07:48,055
+M also forces a handoff These conditions come before the optional early-switch
+
+113
+00:07:48,067 --> 00:07:52,240
+check in the paper's algorithm The ordinary task critic still bootstraps
+
+114
+00:07:52,347 --> 00:07:56,389
+through a mere scheduler cutoff The rule controls which behavior collects
+
+115
+00:07:56,400 --> 00:08:00,848
+data it does not redefine the goal-reaching task every time the eligibility
+
+116
+00:08:00,860 --> 00:08:01,685
+coin is drawn
+
+117
+00:08:03,637 --> 00:08:07,403
+The switching probability is a hazard the probability of ending this
+
+118
+00:08:07,415 --> 00:08:11,838
+segment now conditional on having continued until now To survive several
+
+119
+00:08:11,850 --> 00:08:17,075
+steps the segment must avoid every earlier switch Multiply the one-minus-hazard
+
+120
+00:08:17,087 --> 00:08:20,973
+factors to obtain the survival curve If the competence score changes
+
+121
+00:08:20,984 --> 00:08:24,631
+along the path use the score at each corresponding state rather than
+
+122
+00:08:24,643 --> 00:08:29,150
+a single constant Now include trajectory eligibility Before the maximum
+
+123
+00:08:29,162 --> 00:08:33,789
+cutoff an ineligible trajectory survives every intelligent-switch opportunity
+
+124
+00:08:34,172 --> 00:08:38,368
+An eligible trajectory survives according to the product The unconditional
+
+125
+00:08:38,380 --> 00:08:43,079
+survival probability is therefore one minus zeta plus zeta times the
+
+126
+00:08:43,174 --> 00:08:47,072
+eligible survival curve This mixture is why replacing the trajectory
+
+127
+00:08:47,084 --> 00:08:50,635
+coin with a per-step factor produces a different length distribution
+
+128
+00:08:51,041 --> 00:08:55,082
+Summing the tail probabilities gives expected segment length The laboratory
+
+129
+00:08:55,094 --> 00:08:59,661
+evaluates this finite sum exactly for a fixed competence a chosen minimum
+
+130
+00:08:59,673 --> 00:09:03,894
+length and a forced maximum It deliberately excludes early physical
+
+131
+00:09:03,906 --> 00:09:07,743
+goal hits so that the switching mechanism can be isolated You can see
+
+132
+00:09:07,755 --> 00:09:11,868
+how beta zeta and the minimum length affect both the mean duration and
+
+133
+00:09:11,880 --> 00:09:13,267
+the chance of long segments
+
+134
+00:09:15,217 --> 00:09:19,043
+Return to the corridor picture As a robot approaches a goal it already
+
+135
+00:09:19,055 --> 00:09:23,300
+knows how to reach the success critic rises The scheduler may switch
+
+136
+00:09:23,311 --> 00:09:27,472
+to the opposite goal before arrival The physical state is unchanged
+
+137
+00:09:27,687 --> 00:09:31,681
+but the state-goal pair is new Repeating this mechanism can reallocate
+
+138
+00:09:31,692 --> 00:09:35,686
+experience away from routinely completed tails and toward portions of
+
+139
+00:09:35,698 --> 00:09:39,930
+the problem that remain useful to learn The intended result is a curriculum
+
+140
+00:09:40,002 --> 00:09:44,234
+that depends on competence rather than only on a clock or distance threshold
+
+141
+00:09:44,652 --> 00:09:49,076
+But competence itself is learned and the induced data distribution changes
+
+142
+00:09:49,232 --> 00:09:53,583
+as both policy and critic change A misleading success critic can schedule
+
+143
+00:09:53,595 --> 00:09:58,127
+poor practice Frequent handoffs can also produce coverage problems despite
+
+144
+00:09:58,139 --> 00:10:01,857
+correct Bellman targets which is why the modulation mechanisms matter
+
+145
+00:10:02,311 --> 00:10:06,424
+Think of target correctness and data usefulness as two separate requirements
+
+146
+00:10:06,818 --> 00:10:10,608
+Correct bootstrapping gives the critic a consistent quantity to estimate
+
+147
+00:10:11,003 --> 00:10:15,104
+Intelligent switching tries to improve the examples available for estimating
+
+148
+00:10:15,116 --> 00:10:19,169
+it and improving the policy Fixing either requirement alone does not
+
+149
+00:10:19,240 --> 00:10:23,102
+automatically solve the other This separation makes the paper's two
+
+150
+00:10:23,114 --> 00:10:27,239
+major contributions easier to understand and evaluate independently
+
+151
+00:10:29,185 --> 00:10:33,345
+An ablation should isolate a question Removing timeout-aware bootstrapping
+
+152
+00:10:33,357 --> 00:10:37,566
+tests whether the target's meaning matters Removing intelligent switching
+
+153
+00:10:37,721 --> 00:10:41,033
+while retaining consistent targets tests whether the learned schedule
+
+154
+00:10:41,045 --> 00:10:45,444
+improves experience allocation Removing the eligibility coin minimum
+
+155
+00:10:45,456 --> 00:10:49,163
+length or conservative factor tests whether the raw competence signal
+
+156
+00:10:49,175 --> 00:10:53,132
+causes excessive switching These changes are related but they are not
+
+157
+00:10:53,192 --> 00:10:57,508
+interchangeable explanations The paper studies these components empirically
+
+158
+00:10:57,568 --> 00:11:01,585
+in its chosen environments Our laboratory does not reproduce those learning
+
+159
+00:11:01,597 --> 00:11:06,092
+curves It exposes the mechanics that make the ablations meaningful You
+
+160
+00:11:06,104 --> 00:11:09,667
+can compare correct and false-terminal targets without training a neural
+
+161
+00:11:09,679 --> 00:11:13,182
+network and compare segment-length distributions without changing the
+
+162
+00:11:13,194 --> 00:11:17,330
+physical task Those controlled examples help explain what the empirical
+
+163
+00:11:17,342 --> 00:11:21,479
+experiments are testing When applying the idea elsewhere examine goal
+
+164
+00:11:21,491 --> 00:11:26,166
+definitions success detection and reset feasibility A high score on
+
+165
+00:11:26,178 --> 00:11:30,577
+an easy but irrelevant goal does not necessarily create useful exploration
+
+166
+00:11:30,589 --> 00:11:34,594
+after switching Likewise a controller that cannot reach the alternate
+
+167
+00:11:34,606 --> 00:11:39,138
+goal may accumulate unhelpful data risk supplies a scheduling mechanism
+
+168
+00:11:39,281 --> 00:11:42,724
+whose success depends on the surrounding goal-conditioned learning problem
+
+169
+00:11:44,687 --> 00:11:48,955
+Start with early-switch eligibility equal to zero Every segment in the
+
+170
+00:11:48,967 --> 00:11:53,367
+toy model reaches the maximum length because we have excluded goal hits
+
+171
+00:11:53,761 --> 00:11:58,030
+Increase eligibility while keeping competence fixed A second population
+
+172
+00:11:58,042 --> 00:12:01,915
+of shorter segments appears in the survival curve The long tail from
+
+173
+00:12:01,927 --> 00:12:06,458
+ineligible trajectories remains visible until the forced cutoff exactly
+
+174
+00:12:06,470 --> 00:12:11,181
+as predicted by the mixture equation Next increase beta toward one Switching
+
+175
+00:12:11,193 --> 00:12:15,401
+becomes more conservative early in the trajectory Increase the minimum
+
+176
+00:12:15,413 --> 00:12:19,407
+length and watch the survival curve stay flat for longer before declining
+
+177
+00:12:19,861 --> 00:12:23,639
+Finally raise competence Once checks become active a more competent
+
+178
+00:12:23,651 --> 00:12:27,740
+agent tends to switch sooner These effects follow from the actual probability
+
+179
+00:12:27,752 --> 00:12:32,283
+rule not from a hand-drawn animation Below the plot the target comparison
+
+180
+00:12:32,426 --> 00:12:36,372
+holds the task transition constant Triggering a handoff changes the
+
+181
+00:12:36,384 --> 00:12:40,329
+false-terminal target but leaves the continuation target alone This
+
+182
+00:12:40,341 --> 00:12:44,298
+pairs the two lessons in one view scheduling changes the duration of
+
+183
+00:12:44,310 --> 00:12:48,232
+collected segments while correct value learning keeps the underlying
+
+184
+00:12:48,244 --> 00:12:51,914
+objective consistent The physical control problem and the collection
+
+185
+00:12:51,926 --> 00:12:54,532
+schedule are allowed to evolve on different terms
+
+186
+00:12:56,479 --> 00:13:00,735
+risk reframes a controller handoff as a decision about useful experience
+
+187
+00:13:01,142 --> 00:13:04,920
+The success critic estimates competence on the current goal The scheduler
+
+188
+00:13:04,932 --> 00:13:09,236
+uses that estimate to avoid spending every trajectory on already-mastered
+
+189
+00:13:09,248 --> 00:13:13,731
+tails Its three modulation mechanisms keep the decision from collapsing
+
+190
+00:13:13,839 --> 00:13:18,119
+into rapid back-and-forth switching that explores very little The mathematical
+
+191
+00:13:18,131 --> 00:13:22,674
+foundation is just as important as the scheduler A handoff changes behavior
+
+192
+00:13:22,949 --> 00:13:26,512
+but need not end the goal-conditioned return being learned Preserving
+
+193
+00:13:26,524 --> 00:13:30,182
+that distinction keeps the critic's target from drifting with the scheduling
+
+194
+00:13:30,194 --> 00:13:34,044
+rule We derived both the success target and the trajectory survival
+
+195
+00:13:34,056 --> 00:13:37,666
+curve so that each part of the mechanism can be inspected independently
+
+196
+00:13:38,073 --> 00:13:41,863
+The next lesson asks for a different kind of result Rather than proposing
+
+197
+00:13:41,875 --> 00:13:45,725
+a practical switching heuristic and measuring its performance can we
+
+198
+00:13:45,737 --> 00:13:49,407
+prove that an agent both learns a good policy and needs progressively
+
+199
+00:13:49,419 --> 00:13:53,556
+fewer resets per unit of experience The answer will involve a constrained
+
+200
+00:13:53,568 --> 00:13:57,860
+decision process two no-regret players and assumptions that are essential
+
+201
+00:13:57,872 --> 00:13:58,649
+to the guarantee

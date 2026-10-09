@@ -1,0 +1,622 @@
+WEBVTT
+
+00:00:00.592 --> 00:00:04.387
+Imagine a mobile robot rewarded for discovering unfamiliar parts of
+
+00:00:04.399 --> 00:00:08.607
+a warehouse It finds a complicated corner with endless novelty and stays
+
+00:00:08.619 --> 00:00:12.483
+there Meanwhile the actual deployment task is moving between a loading
+
+00:00:12.495 --> 00:00:17.300
+station and a shelf In an episodic benchmark automatic resets repeatedly
+
+00:00:17.311 --> 00:00:21.669
+bring the robot back to relevant areas Without them the learning system
+
+00:00:21.783 --> 00:00:25.866
+must create that return behavior itself A world model can help the robot
+
+00:00:25.877 --> 00:00:29.719
+learn from fewer physical interactions by simulating possible futures
+
+00:00:30.109 --> 00:00:33.881
+But a model trained mostly on irrelevant corners can still allocate
+
+00:00:33.893 --> 00:00:38.009
+practice poorly Strong exploration alone does not ensure that the collected
+
+00:00:38.021 --> 00:00:41.622
+data supports the task The question becomes both where to act in the
+
+00:00:41.633 --> 00:00:44.947
+real world and which goals to train toward inside the learned model
+
+00:00:45.326 --> 00:00:49.603
+More Free modifies both choices It periodically directs real behavior
+
+00:00:49.614 --> 00:00:53.811
+between initial states and evaluation goals and it biases imagined goal
+
+00:00:53.823 --> 00:00:57.653
+practice toward those same task-relevant distributions The published
+
+00:00:57.664 --> 00:01:01.471
+paper is titled Reset-free Reinforcement Learning with World Models
+
+00:01:01.850 --> 00:01:05.967
+We will distinguish the two sampling mechanisms derive their consequences
+
+00:01:06.173 --> 00:01:09.751
+and keep model-based efficiency separate from the physical work of recovery
+
+00:01:11.691 --> 00:01:15.429
+The model-based backbone learns a recurrent state-space model from interaction
+
+00:01:15.440 --> 00:01:19.098
+data A latent state summarizes the information used to predict what
+
+00:01:19.110 --> 00:01:23.754
+happens after an action The model then acts as a learned simulator policies
+
+00:01:23.766 --> 00:01:27.504
+can generate synthetic trajectories inside it and value functions can
+
+00:01:27.515 --> 00:01:31.265
+learn from the predicted consequences These computations do not require
+
+00:01:31.277 --> 00:01:35.348
+physically executing every imagined action There are two important policies
+
+00:01:35.359 --> 00:01:39.086
+in this backbone A goal-conditioned policy tries to reach a commanded
+
+00:01:39.097 --> 00:01:43.317
+state while an exploration policy seeks informative experience Both
+
+00:01:43.329 --> 00:01:47.216
+are trained using imagined rollouts Real data still updates the model
+
+00:01:47.377 --> 00:01:52.342
+and constrains what it knows The cycle is collect model imagine improve
+
+00:01:52.686 --> 00:01:56.172
+then collect again with the improved behavior The equations on screen
+
+00:01:56.184 --> 00:01:59.555
+deliberately describe the concept rather than pretending to reproduce
+
+00:01:59.693 --> 00:02:03.695
+every recurrent-network training term More Free builds on PEG and its
+
+00:02:03.706 --> 00:02:07.628
+Dreamer-derived model-based machinery Its central changes concern how
+
+00:02:07.639 --> 00:02:11.355
+exploration is organized and which goals are used in policy learning
+
+00:02:11.733 --> 00:02:15.609
+Keeping the inherited backbone separate from the new choices helps identify
+
+00:02:15.621 --> 00:02:17.375
+what the paper actually contributes
+
+00:02:19.306 --> 00:02:22.241
+How can the goal-conditioned policy train without the environment's
+
+00:02:22.253 --> 00:02:26.495
+task reward The backbone learns a dynamical distance function Sample
+
+00:02:26.507 --> 00:02:30.280
+two states from an imagined trajectory and use their temporal separation
+
+00:02:30.394 --> 00:02:34.339
+as supervision The function predicts how many actions separate a state
+
+00:02:34.351 --> 00:02:37.722
+from a goal with the normalization described in the paper's appendix
+
+00:02:38.100 --> 00:02:42.148
+This is a learned control-related distance not ordinary geometric distance
+
+00:02:42.527 --> 00:02:46.437
+Negate that predicted distance to obtain a goal-reaching reward States
+
+00:02:46.552 --> 00:02:49.877
+estimated to be closer to the commanded goal receive a better score
+
+00:02:50.267 --> 00:02:54.040
+The policy learns to reduce this distance in imagination Because the
+
+00:02:54.051 --> 00:02:57.537
+distance is learned from trajectories its usefulness depends on the
+
+00:02:57.549 --> 00:03:01.207
+quality of the model the policy generating those trajectories and the
+
+00:03:01.218 --> 00:03:04.762
+coverage of the sampled state pairs There is no claim that all task
+
+00:03:04.773 --> 00:03:09.028
+specification has disappeared The method still assumes relevant initial-state
+
+00:03:09.223 --> 00:03:12.869
+and evaluation-goal distributions Those tell the system what starts
+
+00:03:12.938 --> 00:03:17.078
+and destinations matter Removing environmental reward supervision differs
+
+00:03:17.089 --> 00:03:21.481
+from removing goals representations and reset assumptions The learned
+
+00:03:21.492 --> 00:03:25.391
+distance provides a training signal within that specified goal-conditioned
+
+00:03:25.403 --> 00:03:29.990
+problem rather than discovering an arbitrary user's intent from no information
+
+00:03:31.935 --> 00:03:35.627
+The physical data-collection primitive has two phases First choose a
+
+00:03:35.639 --> 00:03:39.790
+goal and run the goal-conditioned policy for a specified horizon Then
+
+00:03:40.031 --> 00:03:43.655
+from whatever state was actually reached run the exploration policy
+
+00:03:43.666 --> 00:03:47.840
+for another horizon Store both segments The phrase Go-Explore names
+
+00:03:47.852 --> 00:03:51.418
+this alternation between directed movement and exploration from the
+
+00:03:51.429 --> 00:03:56.005
+resulting location In the PEG backbone exploratory goals are selected
+
+00:03:56.016 --> 00:04:00.064
+using the learned model to seek useful exploration opportunities The
+
+00:04:00.076 --> 00:04:04.147
+exploration policy is trained with an intrinsic signal based on disagreement
+
+00:04:04.376 --> 00:04:08.091
+among prediction models Disagreement can encourage visiting areas where
+
+00:04:08.103 --> 00:04:11.749
+the model may improve But the connection between uncertainty learning
+
+00:04:11.761 --> 00:04:16.027
+progress and task relevance is imperfect especially when the physical
+
+00:04:16.038 --> 00:04:20.579
+process is never routinely reset If every chosen goal pulls farther
+
+00:04:20.591 --> 00:04:24.834
+into unfamiliar but irrelevant regions the system can neglect the starts
+
+00:04:24.845 --> 00:04:28.778
+and goals used at evaluation A model may become very knowledgeable about
+
+00:04:28.790 --> 00:04:32.757
+the wrong places More Free keeps the Go-Explore primitive but changes
+
+00:04:32.769 --> 00:04:36.645
+how it is scheduled around task-relevant goal pairs The next animation
+
+00:04:36.851 --> 00:04:40.509
+makes those physical phases explicit so that learned resets cannot be
+
+00:04:40.521 --> 00:04:42.252
+confused with simulator resets
+
+00:04:44.177 --> 00:04:47.766
+At each outer data-collection decision draw a coin with probability
+
+00:04:47.778 --> 00:04:52.124
+alpha If it selects the task-directed branch sample an evaluation goal
+
+00:04:52.342 --> 00:04:56.447
+and an initial-state goal Execute Go-Explore toward the evaluation goal
+
+00:04:56.734 --> 00:05:00.736
+then execute Go-Explore toward the initial-state goal The second call
+
+00:05:00.747 --> 00:05:04.967
+begins from the actual final state of the first call including its exploration
+
+00:05:04.979 --> 00:05:09.072
+phase This order creates forward and back behavior through ordinary
+
+00:05:09.084 --> 00:05:13.269
+actions The policy may fail to reach a sampled goal within its allotted
+
+00:05:13.281 --> 00:05:17.421
+horizon so the procedure does not assume successful teleportation It
+
+00:05:17.432 --> 00:05:21.342
+keeps operating from the state it has On the other branch with probability
+
+00:05:21.354 --> 00:05:25.666
+one minus alpha execute one Go-Explore call for an exploratory goal
+
+00:05:25.780 --> 00:05:29.759
+supplied by the backbone The mixture balances task relevance with wider
+
+00:05:29.771 --> 00:05:33.521
+exploration A small amount of directed return can bring data collection
+
+00:05:33.532 --> 00:05:37.397
+back to states that matter for evaluation and future practice But if
+
+00:05:37.408 --> 00:05:41.078
+the policy cannot yet reach them merely sampling those goals is not
+
+00:05:41.089 --> 00:05:45.607
+enough That motivates the second change explicitly training the goal-conditioned
+
+00:05:45.619 --> 00:05:48.543
+policy on relevant goals inside the learned model
+
+00:05:50.487 --> 00:05:54.053
+The goal-conditioned policy also needs practice reaching the destinations
+
+00:05:54.065 --> 00:05:58.193
+that real behavior will request During imagined policy training More
+
+00:05:58.204 --> 00:06:02.482
+Free samples evaluation goals with probability alpha over two initial-state
+
+00:06:02.493 --> 00:06:06.013
+goals with the same probability and random replay states with the remaining
+
+00:06:06.025 --> 00:06:10.222
+probability one minus alpha The three mixture weights add to one The
+
+00:06:10.233 --> 00:06:14.614
+replay component maintains broader goal-reaching ability The two task-relevant
+
+00:06:14.625 --> 00:06:18.341
+components emphasize what evaluation and back-and-forth exploration
+
+00:06:18.352 --> 00:06:22.263
+will demand If the model can support those imagined trajectories the
+
+00:06:22.274 --> 00:06:26.138
+policy can improve its ability to return without physically repeating
+
+00:06:26.253 --> 00:06:30.358
+every training rollout This is how sample efficiency in imagination
+
+00:06:30.370 --> 00:06:34.200
+can support autonomy in the real environment Keep this mixture separate
+
+00:06:34.338 --> 00:06:37.778
+from the real-world branch coin The same alpha parameter appears in
+
+00:06:37.789 --> 00:06:41.929
+both but the procedures are different One chooses among individual goals
+
+00:06:41.940 --> 00:06:45.575
+for imagined learning The other chooses between a two-call task-directed
+
+00:06:45.587 --> 00:06:49.658
+routine and a one-call exploratory routine Equating their raw percentages
+
+00:06:49.669 --> 00:06:53.098
+would miss a subtle but important difference in how interaction time
+
+00:06:53.293 --> 00:06:53.947
+is allocated
+
+00:06:55.905 --> 00:06:59.529
+Here is a small calculation that makes the distinction concrete Every
+
+00:06:59.540 --> 00:07:04.517
+task-directed outer decision generates two Go-Explore calls Every exploratory
+
+00:07:04.609 --> 00:07:09.081
+outer decision generates one Over many independent decisions the expected
+
+00:07:09.093 --> 00:07:13.037
+number of task-directed calls per decision is two alpha while the expected
+
+00:07:13.049 --> 00:07:17.441
+total is one plus alpha With equal call lengths their long-run ratio
+
+00:07:17.452 --> 00:07:22.326
+is two alpha divided by one plus alpha At alpha equal to point two the
+
+00:07:22.337 --> 00:07:26.397
+imagined goal distribution assigns ten percent to evaluation goals ten
+
+00:07:26.408 --> 00:07:30.766
+percent to initial-state goals and eighty percent to replay goals But
+
+00:07:30.777 --> 00:07:34.137
+the real schedule assigns about one third of its Go-Explore calls to
+
+00:07:34.149 --> 00:07:37.841
+the paired task-directed branch Those calls still contain their own
+
+00:07:37.852 --> 00:07:41.683
+exploration phases so this is not a claim that one third of all actions
+
+00:07:41.694 --> 00:07:45.536
+are direct goal pursuit This ratio is our accounting derivation from
+
+00:07:45.547 --> 00:07:49.389
+the pseudocode not a performance statistic reported by the paper It
+
+00:07:49.400 --> 00:07:53.322
+assumes the specified fixed phase lengths and enough calls for the long-run
+
+00:07:53.333 --> 00:07:56.911
+average to be meaningful The laboratory shows both the imagined-goal
+
+00:07:56.923 --> 00:08:01.120
+mixture and this derived call fraction preventing two uses of alpha
+
+00:08:01.131 --> 00:08:04.009
+from being collapsed into a misleading single pie chart
+
+00:08:05.948 --> 00:08:09.790
+A learned simulator gives the optimizer a convenient capability it can
+
+00:08:09.801 --> 00:08:13.918
+begin synthetic trajectories from stored latent states and explore hypothetical
+
+00:08:13.929 --> 00:08:18.264
+futures That computational freedom can resemble a reset button But it
+
+00:08:18.275 --> 00:08:22.174
+belongs to the model not to the robot The real system remains in its
+
+00:08:22.186 --> 00:08:26.050
+actual state until real actions move it somewhere else This creates
+
+00:08:26.062 --> 00:08:30.511
+a feedback loop Real coverage trains the model The model supplies imagined
+
+00:08:30.522 --> 00:08:34.914
+practice Practice improves the goal-conditioned policy That policy then
+
+00:08:34.926 --> 00:08:38.836
+changes which real states can be reached and recovered from If one link
+
+00:08:38.848 --> 00:08:43.274
+fails the others can suffer A model with poor recovery data may imagine
+
+00:08:43.366 --> 00:08:47.116
+easy returns that the physical policy cannot reproduce The two More
+
+00:08:47.127 --> 00:08:50.980
+Free changes aim to strengthen the loop together Task-directed real
+
+00:08:51.049 --> 00:08:54.959
+exploration supplies relevant evidence and task-directed imagined goals
+
+00:08:54.971 --> 00:08:59.271
+train the skills that exploration requests The paper's ablations examine
+
+00:08:59.282 --> 00:09:03.319
+those components Our diagram shows their causal roles without treating
+
+00:09:03.330 --> 00:09:07.493
+imagination as a source of guaranteed correct transitions or a replacement
+
+00:09:07.504 --> 00:09:10.222
+for measuring actual intervention during data collection
+
+00:09:12.177 --> 00:09:16.248
+To see why imagination requires care use a one-dimensional system whose
+
+00:09:16.259 --> 00:09:20.055
+true next state is current state plus action Give the learned model
+
+00:09:20.124 --> 00:09:23.988
+a small multiplicative bias on that action If both systems begin at
+
+00:09:24.000 --> 00:09:28.002
+the same state and repeat the same constant action each model step adds
+
+00:09:28.013 --> 00:09:32.967
+an extra epsilon times action After H steps the discrepancy is H times
+
+00:09:32.978 --> 00:09:37.302
+that error This is a deliberately simple example Real closed-loop nonlinear
+
+00:09:37.313 --> 00:09:41.888
+dynamics can amplify damp or redirect errors so there is no universal
+
+00:09:41.900 --> 00:09:45.914
+claim that all world-model error grows linearly The toy lets us isolate
+
+00:09:45.925 --> 00:09:49.262
+the relation between rollout length and a persistent prediction bias
+
+00:09:49.640 --> 00:09:53.379
+A tiny one-step error can become a meaningful difference over a long
+
+00:09:53.390 --> 00:09:57.817
+imagined control sequence A policy optimizer may also prefer trajectories
+
+00:09:57.828 --> 00:10:01.589
+where the model is unrealistically optimistic Increasing the number
+
+00:10:01.601 --> 00:10:06.062
+of imagined samples does not remove that bias it can reinforce it The
+
+00:10:06.073 --> 00:10:09.456
+paper discusses limitations of model-based learning and cases where
+
+00:10:09.467 --> 00:10:13.286
+learning dynamics can be difficult Strong empirical performance on its
+
+00:10:13.297 --> 00:10:17.242
+tasks should be interpreted alongside those limits not as proof that
+
+00:10:17.254 --> 00:10:20.143
+a world model solves every reset-free environment
+
+00:10:22.069 --> 00:10:26.209
+More Free is evaluated in a goal-conditioned reset-free setting with
+
+00:10:26.346 --> 00:10:30.715
+episodic evaluation Policies are tested from the initial-state distribution
+
+00:10:30.819 --> 00:10:35.211
+toward evaluation goals During training the system uses a learned distance
+
+00:10:35.222 --> 00:10:39.029
+reward and model-based exploration rather than environmental task reward
+
+00:10:39.155 --> 00:10:43.054
+or demonstrations Those are meaningful reductions in supervision but
+
+00:10:43.066 --> 00:10:47.079
+the initial and evaluation-goal distributions are still supplied The
+
+00:10:47.091 --> 00:10:50.898
+published study compares methods on eight tasks and includes ablations
+
+00:10:50.909 --> 00:10:55.221
+of real exploration and imagined goal sampling Its conclusions are empirical
+
+00:10:55.232 --> 00:10:59.154
+within those environments and implementations The explanation here does
+
+00:10:59.166 --> 00:11:03.409
+not introduce new benchmark scores real-robot deployments or a formal
+
+00:11:03.420 --> 00:11:07.514
+reset-rate guarantee Our charts are analytic teaching models whose parameters
+
+00:11:07.525 --> 00:11:11.631
+are visible and whose limitations are stated next to the controls When
+
+00:11:11.642 --> 00:11:15.415
+reading a model-based result ask separately whether it improves final
+
+00:11:15.484 --> 00:11:19.555
+goal-reaching performance physical sample efficiency recovery behavior
+
+00:11:19.818 --> 00:11:23.385
+and dependence on external intervention Also inspect the observation
+
+00:11:23.396 --> 00:11:27.754
+representation and supervision available to each baseline These questions
+
+00:11:27.765 --> 00:11:31.492
+make it possible to appreciate the method's contribution without treating
+
+00:11:31.503 --> 00:11:34.989
+a favorable learning curve as evidence for every possible meaning of
+
+00:11:35.001 --> 00:11:35.494
+autonomy
+
+00:11:37.433 --> 00:11:41.286
+The final laboratory has two linked views The first computes the three
+
+00:11:41.298 --> 00:11:45.449
+imagined goal probabilities exactly from alpha alongside the derived
+
+00:11:45.460 --> 00:11:49.107
+task-directed call fraction in the real schedule Start at the paper's
+
+00:11:49.118 --> 00:11:54.256
+default alpha of point two then move toward zero and one At zero no
+
+00:11:54.267 --> 00:11:59.416
+task-directed bias remains At one replay-goal training and exploratory-only
+
+00:11:59.427 --> 00:12:03.544
+routines are removed in this simplified accounting The second view compares
+
+00:12:03.556 --> 00:12:07.810
+true and predicted one-dimensional rollouts Adjust the gain bias and
+
+00:12:07.821 --> 00:12:11.778
+the imagination horizon The displayed final discrepancy is computed
+
+00:12:11.789 --> 00:12:15.711
+from the trajectories and agrees with the analytic formula Set bias
+
+00:12:15.722 --> 00:12:20.298
+to zero to make the paths coincide increase horizon to expose accumulated
+
+00:12:20.309 --> 00:12:24.438
+error There is no trained world model hidden behind these lines Read
+
+00:12:24.449 --> 00:12:28.554
+the views together Goal allocation can focus learning on relevant behavior
+
+00:12:28.921 --> 00:12:32.751
+while model error can make that practice misleading Neither slider directly
+
+00:12:32.763 --> 00:12:36.570
+predicts the paper's benchmark performance The purpose is to make two
+
+00:12:36.581 --> 00:12:40.801
+causal ingredients inspectable which tasks receive training effort and
+
+00:12:40.813 --> 00:12:44.700
+how trustworthy imagined consequences are A successful system needs
+
+00:12:44.712 --> 00:12:48.588
+both useful allocation and adequate predictive accuracy in the regions
+
+00:12:48.599 --> 00:12:49.299
+it relies on
+
+00:12:51.235 --> 00:12:55.145
+Across the series we have treated the world as one continuing process
+
+00:12:55.157 --> 00:12:59.239
+and identified the decisions a reset button used to hide The foundations
+
+00:12:59.250 --> 00:13:03.218
+lesson separated task termination from collection boundaries Leave no
+
+00:13:03.230 --> 00:13:07.083
+Trace learned recovery and used it to screen actions medal selected
+
+00:13:07.094 --> 00:13:11.211
+useful return distributions risk chose when to switch based on competence
+
+00:13:11.291 --> 00:13:14.743
+while preserving the critic's meaning The theory paper supplied a different
+
+00:13:14.754 --> 00:13:18.584
+kind of understanding an assumption-to-guarantee chain linking no-regret
+
+00:13:18.596 --> 00:13:22.713
+learning to performance and expected reset cost More Free supplied a
+
+00:13:22.724 --> 00:13:26.554
+model-based mechanism for improving relevant practice through both real
+
+00:13:26.634 --> 00:13:31.026
+exploration and imagination These ideas can inform one another but their
+
+00:13:31.038 --> 00:13:35.143
+assumptions and conclusions should remain visible when proposing combinations
+
+00:13:35.533 --> 00:13:38.836
+The common design question is how today's experience affects tomorrow's
+
+00:13:38.847 --> 00:13:43.078
+ability to keep learning Answer it by specifying the return the reachable
+
+00:13:43.090 --> 00:13:47.069
+states the data distribution the behavior schedule and the intervention
+
+00:13:47.080 --> 00:13:51.163
+budget Then use the experiments to challenge your intuition A reset-free
+
+00:13:51.174 --> 00:13:55.222
+learner is not merely an episodic learner with one function call removed
+
+00:13:55.601 --> 00:13:58.662
+it is a system responsible for creating its own future practice
